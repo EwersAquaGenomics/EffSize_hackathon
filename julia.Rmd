@@ -3,8 +3,13 @@ Simulation of  Genealogies
 
 Ape and coalMCMC have functions that simulates genealogies under the coalescent model for specific demographic scenarios.
 
-When you click the **Knit HTML** button a web page will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+The demographic scenarios are
+1. Constant Population Size
+2. Exponential Growth
+3. 
 
+Reference: http://cran.r-project.org/web/packages/coalescentMCMC/coalescentMCMC.pdf
+\end{itemize}
 ```{r}
 library("ape")
 rcoal(5)
