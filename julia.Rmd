@@ -13,7 +13,62 @@ The demographic models are
 
 4. Exponential double growth model --coalescentMCMC
 
-5. Any R function for defining $N_{e}$ ---Julia
+5. Any R function for defining $N_{e}$ ---Julia: phylodyn
+
+
+Example
+======================
+We will simulate a genealogy with heterochronous sampling times from a population bottleneck
+
+```{r}
+
+##Simulation from a specific function
+bottleneck_traj<-function(t){
+  result=rep(0,length(t))
+	result[t<=0.5]<-1
+	result[t>0.5 & t<1]<-.1
+	result[t>=1]<-1
+	return(result)
+}
+bottleneck_traj_inv<-function(t){
+	return(1/bottleneck_traj(t))
+}
+
+```
+Define the sampling times
+```{r}
+SCH=c('isochron','heterochron'); type=2;
+if(type==1){
+  samp_times = 0
+	n_sampled = 100
+}
+if(type==2){
+    uplim=0.8
+	samp_times = c(0, sort(runif(40, 0, uplim)))
+	n_sampled = c(10, rep(1, 40))
+  #So, we actually have 50 samples
+}
+
+```
+Simulate the heterochronous genealogy by thinning
+```{r}
+
+sample = cbind(n_sampled, samp_times)
+install_github("phylodyn", username="mdkarcher")
+library("phylodyn")
+# Generate a genealogy using the coalescent
+gene = coalgen_thinning_hetero(sample=sample, trajectory=bottleneck_traj)
+coal_times=cumsum(gene$intercoal_times)
+args = gen_INLA_args(coal_times=coal_times, s_times=samp_times, n_sampled=n_sampled)
+simulation<-generate_newick(args,sample) #takes the input generated in gen_INLA_args function and sample
+out.tree<-simulation$newick
+```
+Finally, visualize your heterochronous simulation
+```{r fig.width=7, fig.height=6}
+plot(out.tree,show.tip.label=FALSE)
+```
+
+
 
 
 Simulation of Sequence Data
@@ -76,9 +131,5 @@ rcoal(5)
 plot(rcoal(5))
 ```
 
-You can also embed plots, for example:
 
-```{r fig.width=7, fig.height=6}
-plot(cars)
-```
 
