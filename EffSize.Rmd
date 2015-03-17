@@ -1,0 +1,57 @@
+---
+title: "what should the package do?"
+author: "Christine Ewers-Saucedo"
+date: "`r date()`"
+output: html_document
+---
+
+Estimate all kinds of measures of effective population size, using all kinds of pop gen data
+     
+Input formats:     
+sample of coalescent trees (coalescent Ne only?)
+DNA alignment
+SNP data
+microsatellite data
+    
+**Ne based on coalescent approach (skyline plots)**
+    
+Step 1:    
+make a sample of trees if trees have not been input
+     
+Programs that make trees:    
+SNP data: sampletrees written in C++, and assisting R package Rsampletrees http://stat.sfu.ca/statgen/research/sampletrees.html     
+microsatellite data: BEAST http://www.genetics.org/content/188/1/151.full     
+DNA alignments: several methods in R -> George    
+    
+    
+Step 2:    
+skyline plots?    
+
+Programs that make skyline plots:       
+function skyline{ape}    
+package VarEff takes microsatellite data and makes skyline plot, but was removed from R repository    
+
+**Ne based on linkage disequilibrium**   
+requires haploid?/diploid alleles from >= 2 polymorphic loci    
+LDNe -> no longer maintained    
+NeEstimator2  
+
+**Ne based on heterozygote excess**   
+requires haploid/diploid alleles from >= 1 polymorphic locus    
+NeEstimator2    
+
+**Ne based on molecular coancestry, effective size of breeders**        
+requires diploid alleles from >= 1 polymorphic locus    
+NeEstimator2    
+
+**Ne based on temporal method**    
+requires sampling two generations    
+requires haploid/diploid alleles from >= 1 polymorphic locus     
+NeEstimator2    
+different ways to calculate temporal Ne    
+(a) Nei & Tajima    
+(b) Pollack    
+(c) Jorde & Ryman      
+
+
+NeEstimator2: The software produces estimates of Ne from individual genotypes at diploid nuclear loci, such as microsatellites and SNPs.
