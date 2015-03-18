@@ -50,8 +50,8 @@ library("devtools")
 install_github("phylodyn", username="mdkarcher")
 library("phylodyn")
 sample<-c(10,0)
-simul_times<-coalgen_thinning_iso(sample,bottleneck_traj,upper=1)
-my.tree3<-rcoal(10,br=simul_times$intercoal_times)
+simul_times<-coalgen_thinning_iso(sample,bottleneck_traj_inv,upper=1)
+my.tree3<-rcoal(50,br=simul_times$intercoal_times)
 ```
 
 We can simulate the coalescent times with a specic population size trajectory and with specific sampling times.
@@ -78,24 +78,80 @@ plot(my.tree4,show.tip.label=FALSE,main="Bottleneck, fixed sampling")
 axisPhylo()
 ```
 
-Unused functions
-======================
+*Phyclust incorporates the popular open source C program ms. ms uses a parameterized way of specifing the population demography. For example, the following function simulates an isochronous genealogy from exponential growth
 
-Check ms from phyclust, phylosym
+```{r}
+library(phyclust)
+my.tree5<-read.tree(text=ms(nsam = 50, opts = "-T -G 0.1")[3])
+my.tree6<-read.tree(text=ms(nsam = 50, opts = "-T -G -0.1")[3])
+
+par(mfrow=c(1,3))
+plot(my.tree3,show.tip.label=FALSE,main="Bottleneck")
+axisPhylo()
+plot(my.tree5,show.tip.label=FALSE,main="Exponential growth")
+axisPhylo()
+plot(my.tree6,show.tip.label=FALSE,main="Exponential decay")
+axisPhylo()
+
+```
+
+
+
 
 There are other packages like TESS  TreeSim that simulates trees under a birth-death process  (forward simulator?). Needs to be explored.
 http://cran.r-project.org/web/packages/TESS/index.html
 
 
 
+Wrapper for Genealogy simulation
+=============================
+```{r}
+#Return an object of type phylo
+#n (numeric) number of tips
+#N (numeric) number of trees
+#sampling (character) "iso", "het"
+#Ne if (character), "function", "args for ms", 1
+#max (optional) requiered when Ne is function
+#simulator "ms","thinning", "null"
+#sample a matrix with number of samples and samp_times
 
-Simulation of Sequence Data
-========================================================
-PhyloSim  
-ape
-Phangorm (simSeq)
-phyclust Seq-Gen
+sample<-cbind(n_sampled,samp_times)
 
+
+simulate.tree<-function(n=10,N=1,sampling="iso",args="-T -G 0.1",Ne=1,max=1,simulator=NULL,sample=NULL){
+  if (is.null(simulator)) {
+#Generates samples using rcoal with Ne=1. If this is a mistake, specify your simulator (ms,thinning,standard)
+    out<-replicate(N,rcoal(n),simplify=FALSE)
+    class(out)<-"multiPhylo"
+    return(out)
+    }
+  if (simulator=="ms"){
+    if (is.null(args)){args<-"-T"}
+    out<-read.tree(text=paste(rep(ms(nsam = n, opts = args)[3],N),sep="\n"))  
+    return(out)
+  }
+  if (simulator=="thinning"){
+    if (is.function(Ne)){
+    ##Some functions needed for thinning
+     fun_inv<-function(t){
+     return(1/Ne(t))
+     }
+     #upper is an upper bound on fun_inv
+     }else{
+       #"No function Ne provided for thinning"
+     }
+     }
+    
+}
+
+
+my.out<-simulate.tree(n=10,N=2)
+my.out<-simulate.tree(n=10,N=2,simulator="ms",args="-T -G 0.1")
+my.out<-simulate.tree(n=10,N=2,simulator="thinning",Ne=bottleneck_traj_inv,max=1)
+
+
+
+```
 
 
 
@@ -105,52 +161,46 @@ Inference from a single genealogy
 ========================================================
 Skyline Plot (ape)
 ```{r}
-data("hivtree.newick") # example tree in NH format
-tree.hiv <- read.tree(text = hivtree.newick) # load tree
-mcmc.out <- mcmc.popsize(tree.hiv, nstep=1000, thinning=1, burn.in=0,progress.bar=FALSE) 
-popsize <- extract.popsize(mcmc.out)
-sk <- skyline(tree.hiv)
-plot(sk, lwd=1, lty=3)
-lines(popsize)
-
-data.hiv<-heterochronous.gp.stat(tree.hiv)
-
-coal_times=data.hiv$coal.times
-samp_times=data.hiv$sample.times
-n_sampled=data.hiv$sampled.lineages
-
-
-tryCatch({args = gen_INLA_args(coal_times=coal_times, s_times=samp_times, n_sampled=n_sampled);
-  	      res_INLA = calculate.moller.hetero(args$coal_factor, args$s, args$event,100,0.01,0.01)},
-		error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
-if(!exists('res_INLA')) res_INLA=NA
-if(sum(args$coal_factor==0)>0) print("try different values for simulating sampling times")
-
-plot_INLA(res_INLA)
-points(sk$time,sk$population.size,type="S")
+# data("hivtree.newick") # example tree in NH format
+# tree.hiv <- read.tree(text = hivtree.newick) # load tree
+# mcmc.out <- mcmc.popsize(tree.hiv, nstep=1000, thinning=1, burn.in=0,progress.bar=FALSE) 
+# popsize <- extract.popsize(mcmc.out)
+# sk <- skyline(tree.hiv)
+# plot(sk, lwd=1, lty=3)
+# lines(popsize)
+# 
+# data.hiv<-heterochronous.gp.stat(tree.hiv)
+# 
+# coal_times=data.hiv$coal.times
+# samp_times=data.hiv$sample.times
+# n_sampled=data.hiv$sampled.lineages
+# 
+# 
+# tryCatch({args = gen_INLA_args(coal_times=coal_times, s_times=samp_times, n_sampled=n_sampled);
+#   	      res_INLA = calculate.moller.hetero(args$coal_factor, args$s, args$event,100,0.01,0.01)},
+# 		error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+# if(!exists('res_INLA')) res_INLA=NA
+# if(sum(args$coal_factor==0)>0) print("try different values for simulating sampling times")
+# 
+# plot_INLA(res_INLA)
+# points(sk$time,sk$population.size,type="S")
+# use genelite into adeget
 
 ```
 
+
+```{r}
 # run mcmc chain
-mcmc.out <- mcmc.popsize(tree.hiv, nstep=100, thinning=1, burn.in=0,progress.bar=FALSE) # toy run
-#mcmc.out <- mcmc.popsize(tree.hiv, nstep=10000, thinning=5, burn.in=500)
-Bayesian Skyline
-Bayesian Skyride
-Bayesian Skygrid
-Bayesian Skytrack
-Likelihood Estimator
+# mcmc.out <- mcmc.popsize(tree.hiv, nstep=100, thinning=1, burn.in=0,progress.bar=FALSE) # toy run
+# #mcmc.out <- mcmc.popsize(tree.hiv, nstep=10000, thinning=5, burn.in=500)
+# Bayesian Skyline
+# Bayesian Skyride
+# Bayesian Skygrid
+# Bayesian Skytrack
+# Likelihood Estimator
 
+```
 
-Inference from sequence data
-========================================================
-
-
-Inference from Sequence data
-
-
-
-
-Inference from microsatelite data
 
 
 
@@ -158,13 +208,19 @@ Inference from microsatelite data
 References
 ======================================================
 http://cran.r-project.org/web/packages/coalescentMCMC/coalescentMCMC.pdf
+
 ftp://cran.r-project.org/pub/R/web/packages/coalescentMCMC/vignettes/Running_coalescentMCMC.pdf
+
 http://cran.r-project.org/web/packages/coalescentMCMC/vignettes/CoalescentModels.pdf
 
+http://cran.r-project.org/web/packages/phyclust/phyclust.pdf
+
+http://cran.r-project.org/web/packages/phylosim/phylosim.pdf
 
 
 Some other functions that are not in any package
 =====================
+```{r}
 
 branching.sampling.times <- function(phy){
   phy = new2old.phylo(phy)
@@ -212,5 +268,8 @@ heterochronous.gp.stat <- function(phy){
   }
 return(list(coal.times=sorted.coal.times, sample.times = unique.sampling.times, sampled.lineages=sampled.lineages))  
 }
+
+
+```
 
 
