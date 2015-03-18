@@ -10,48 +10,35 @@ A Genealogy (tree) consist of Topology and coalescent times.
 *Coalescent times are exponentially distributed random variables with a rate that depends on the number of lineages and the population size trajectory. Again, for isochronous we can generate those times independently of the topology but not for the heterochronous case. 
 
 
-The demographic models are
+The demographic models are:
 
 1. Constant Population Size 
+
+2. Exponential Growth 
+
+3. Step Model with one change point
+
+4. Exponential double growth model 
+
+5. Any R function for defining $N_{e}$ 
+
+
+Examples
+==================================
+The following examples generates trees from a constant population size (Ne=1)
 ```{r}
 library(ape)
-my.tree<-rcoal(n=10) #simulates a tree with standard constant 1 population size
-
-rcoal(n, tip.label = NULL, br = "coalescent", ...)
-
-plot(my.tree)
-library(coalescentMCMC)
-
-library(phylodyn)
-
-library(pegas)
-
-library(ape)
-ape.gen<-rcoal(10)
+my.tree1<-rcoal(n=10) #simulates an isochronous tree with standard constant 1 population size
+my.tree2<-rtree(n=10) #simulates a heterochronous tree by splitting edges and uniform sampling times. Not necesarily a coalescent tree except for the trivial case of constant population size
 ```
-### Check ms from phyclust
+To simulate a tree with a scaled population size, coalescent times need to be re-scaled accordingly.
 
-2. Exponential Growth --coalescentMCMC
+For a more general case, we can simulate the coalescent times with a specic population size trajectory. In the following example we have a bottleneck scenario:
 
-3. Step Model with one change point--coalescentMCMC
-
-4. Exponential double growth model --coalescentMCMC
-
-5. Any R function for defining $N_{e}$ ---Julia: phylodyn ///phylosym
-
-There are other packages like TESS  TreeSim that simulates trees under a birth-death process  (forward simulator?). Needs to be explored.
-http://cran.r-project.org/web/packages/TESS/index.html
-
-Example
-======================
-We will simulate a genealogy with heterochronous sampling times from a population bottleneck
-
-```{r}
-
-##Simulation from a specific function
+```{r,echo=FALSE}
 bottleneck_traj<-function(t){
   result=rep(0,length(t))
-	result[t<=0.5]<-1
+  result[t<=0.5]<-1
 	result[t>0.5 & t<1]<-.1
 	result[t>=1]<-1
 	return(result)
@@ -59,40 +46,45 @@ bottleneck_traj<-function(t){
 bottleneck_traj_inv<-function(t){
 	return(1/bottleneck_traj(t))
 }
-
-```
-Define the sampling times
-```{r}
-SCH=c('isochron','heterochron'); type=2;
-if(type==1){
-  samp_times = 0
-	n_sampled = 100
-}
-if(type==2){
-    uplim=0.8
-	samp_times = c(0, sort(runif(40, 0, uplim)))
-	n_sampled = c(10, rep(1, 40))
-  #So, we actually have 50 samples
-}
-
-```
-Simulate the heterochronous genealogy by thinning
-```{r}
-
-sample = cbind(n_sampled, samp_times)
+library("devtools")
 install_github("phylodyn", username="mdkarcher")
 library("phylodyn")
-# Generate a genealogy using the coalescent
-gene = coalgen_thinning_hetero(sample=sample, trajectory=bottleneck_traj)
-coal_times=cumsum(gene$intercoal_times)
-args = gen_INLA_args(coal_times=coal_times, s_times=samp_times, n_sampled=n_sampled)
-simulation<-generate_newick(args,sample) #takes the input generated in gen_INLA_args function and sample
-out.tree<-simulation$newick
+sample<-c(10,0)
+simul_times<-coalgen_thinning_iso(sample,bottleneck_traj,upper=1)
+my.tree3<-rcoal(10,br=simul_times$intercoal_times)
 ```
-Finally, visualize your heterochronous simulation
+
+We can simulate the coalescent times with a specic population size trajectory and with specific sampling times.
+```{r}
+samp_times = c(0, sort(runif(40, 0, .8)))
+n_sampled = c(10, rep(1, 40))
+sample<-cbind(n_sampled,samp_times)
+simul_times = coalgen_thinning_hetero(sample=sample, trajectory=bottleneck_traj)
+args = gen_INLA_args(coal_times=cumsum(simul_times$intercoal_times), s_times=samp_times, n_sampled=n_sampled)
+my.tree4<-generate_newick(args,sample)$newick #takes the input generated in gen_INLA_args function and sample
+
+```
+Finally, visualize your simulations
 ```{r fig.width=7, fig.height=6}
-plot(out.tree,show.tip.label=FALSE)
+par(mfrow=c(2,2))
+
+plot(my.tree1,show.tip.label=FALSE,main="Constant")
+axisPhylo()
+plot(my.tree2,show.tip.label=FALSE,main="Constant, random sampling")
+axisPhylo()
+plot(my.tree3,show.tip.label=FALSE,main="Bottleneck")
+axisPhylo()
+plot(my.tree4,show.tip.label=FALSE,main="Bottleneck, fixed sampling")
+axisPhylo()
 ```
+
+Unused functions
+======================
+
+Check ms from phyclust, phylosym
+
+There are other packages like TESS  TreeSim that simulates trees under a birth-death process  (forward simulator?). Needs to be explored.
+http://cran.r-project.org/web/packages/TESS/index.html
 
 
 
@@ -153,19 +145,6 @@ Inference from sequence data
 ========================================================
 
 
-
-
-
-Inference from microsatelite data
-========================================================
-
-
-
-
-
-
-
-
 Inference from Sequence data
 
 
@@ -176,20 +155,16 @@ Inference from microsatelite data
 
 
 
-References: http://cran.r-project.org/web/packages/coalescentMCMC/coalescentMCMC.pdf
+References
+======================================================
+http://cran.r-project.org/web/packages/coalescentMCMC/coalescentMCMC.pdf
 ftp://cran.r-project.org/pub/R/web/packages/coalescentMCMC/vignettes/Running_coalescentMCMC.pdf
 http://cran.r-project.org/web/packages/coalescentMCMC/vignettes/CoalescentModels.pdf
 
 
 
-```{r}
-library("ape")
-rcoal(5)
-plot(rcoal(5))
-```
-
 Some other functions that are not in any package
-================
+=====================
 
 branching.sampling.times <- function(phy){
   phy = new2old.phylo(phy)
@@ -237,13 +212,5 @@ heterochronous.gp.stat <- function(phy){
   }
 return(list(coal.times=sorted.coal.times, sample.times = unique.sampling.times, sampled.lineages=sampled.lineages))  
 }
-
-
-data.hiv<-heterochronous.gp.stat(out.tree)
-
-coal_times=data.hiv$coal.times
-samp_times=data.hiv$sample.times
-n_sampled=data.hiv$sampled.lineages
-
 
 
