@@ -1,11 +1,35 @@
-Simulation of  Genealogies
+Simulation of Genealogies with the Coalescent
 ========================================================
 
-Ape, pegas and coalescentMCMC have functions that simulates genealogies under the coalescent model for specific demographic scenarios. We will consider the following demographic models
+Ape, pegas, phyclust and phylodyn have functions that simulates genealogies under the coalescent model for specific demographic scenarios. We will consider the following demographic models
+
+A Genealogy (tree) consist of Topology and coalescent times. 
+
+*Topology can be isochronous (all tips are "sampled" at time 0) or heterochronous (tips have different "sampling times"). Lineages merge (coalesce) at random between the existant lineages at the coalescent times. For isochronous coalescent we can generate a topology independently of the coalescent times but that is not the case for heterochronous topologies.   
+
+*Coalescent times are exponentially distributed random variables with a rate that depends on the number of lineages and the population size trajectory. Again, for isochronous we can generate those times independently of the topology but not for the heterochronous case. 
+
 
 The demographic models are
 
-1. Constant Population Size --coalescentMCMC, ape, pegas  
+1. Constant Population Size 
+```{r}
+library(ape)
+my.tree<-rcoal(n=10) #simulates a tree with standard constant 1 population size
+
+rcoal(n, tip.label = NULL, br = "coalescent", ...)
+
+plot(my.tree)
+library(coalescentMCMC)
+
+library(phylodyn)
+
+library(pegas)
+
+library(ape)
+ape.gen<-rcoal(10)
+```
+### Check ms from phyclust
 
 2. Exponential Growth --coalescentMCMC
 
@@ -13,8 +37,10 @@ The demographic models are
 
 4. Exponential double growth model --coalescentMCMC
 
-5. Any R function for defining $N_{e}$ ---Julia: phylodyn
+5. Any R function for defining $N_{e}$ ---Julia: phylodyn ///phylosym
 
+There are other packages like TESS  TreeSim that simulates trees under a birth-death process  (forward simulator?). Needs to be explored.
+http://cran.r-project.org/web/packages/TESS/index.html
 
 Example
 ======================
@@ -73,7 +99,8 @@ plot(out.tree,show.tip.label=FALSE)
 
 Simulation of Sequence Data
 ========================================================
-PhyloSim (ape)
+PhyloSim  
+ape
 Phangorm (simSeq)
 phyclust Seq-Gen
 
@@ -85,6 +112,36 @@ phyclust Seq-Gen
 Inference from a single genealogy
 ========================================================
 Skyline Plot (ape)
+```{r}
+data("hivtree.newick") # example tree in NH format
+tree.hiv <- read.tree(text = hivtree.newick) # load tree
+mcmc.out <- mcmc.popsize(tree.hiv, nstep=1000, thinning=1, burn.in=0,progress.bar=FALSE) 
+popsize <- extract.popsize(mcmc.out)
+sk <- skyline(tree.hiv)
+plot(sk, lwd=1, lty=3)
+lines(popsize)
+
+data.hiv<-heterochronous.gp.stat(tree.hiv)
+
+coal_times=data.hiv$coal.times
+samp_times=data.hiv$sample.times
+n_sampled=data.hiv$sampled.lineages
+
+
+tryCatch({args = gen_INLA_args(coal_times=coal_times, s_times=samp_times, n_sampled=n_sampled);
+  	      res_INLA = calculate.moller.hetero(args$coal_factor, args$s, args$event,100,0.01,0.01)},
+		error=function(e){cat("ERROR :",conditionMessage(e), "\n")})
+if(!exists('res_INLA')) res_INLA=NA
+if(sum(args$coal_factor==0)>0) print("try different values for simulating sampling times")
+
+plot_INLA(res_INLA)
+points(sk$time,sk$population.size,type="S")
+
+```
+
+# run mcmc chain
+mcmc.out <- mcmc.popsize(tree.hiv, nstep=100, thinning=1, burn.in=0,progress.bar=FALSE) # toy run
+#mcmc.out <- mcmc.popsize(tree.hiv, nstep=10000, thinning=5, burn.in=500)
 Bayesian Skyline
 Bayesian Skyride
 Bayesian Skygrid
@@ -130,6 +187,63 @@ library("ape")
 rcoal(5)
 plot(rcoal(5))
 ```
+
+Some other functions that are not in any package
+================
+
+branching.sampling.times <- function(phy){
+  phy = new2old.phylo(phy)
+  if (class(phy) != "phylo")
+    stop("object \"phy\" is not of class \"phylo\"")
+  tmp <- as.numeric(phy$edge)
+  nb.tip <- max(tmp)
+  nb.node <- -min(tmp)
+  xx <- as.numeric(rep(NA, nb.tip + nb.node))
+  names(xx) <- as.character(c(-(1:nb.node), 1:nb.tip))
+  xx["-1"] <- 0
+  for (i in 2:length(xx)) {
+    nod <- names(xx[i])
+    ind <- which(phy$edge[, 2] == nod)
+    base <- phy$edge[ind, 1]
+    xx[i] <- xx[base] + phy$edge.length[ind]
+  }
+  depth <- max(xx)
+  branching.sampling.times <- depth - xx
+  return(branching.sampling.times)
+}
+
+heterochronous.gp.stat <- function(phy){
+  b.s.times = branching.sampling.times(phy)
+  int.ind = which(as.numeric(names(b.s.times)) < 0)
+  tip.ind = which(as.numeric(names(b.s.times)) > 0)
+  num.tips = length(tip.ind)
+  num.coal.events = length(int.ind)
+  sampl.suf.stat = rep(NA, num.coal.events)
+  coal.interval = rep(NA, num.coal.events)
+  coal.lineages = rep(NA, num.coal.events)
+  sorted.coal.times = sort(b.s.times[int.ind])
+  names(sorted.coal.times) = NULL
+  #unique.sampling.times = sort(unique(b.s.times[tip.ind]))
+  sampling.times = sort((b.s.times[tip.ind]))
+  for (i in 2:length(sampling.times)){
+   if ((sampling.times[i]-sampling.times[i-1])<0.1){
+     sampling.times[i]<-sampling.times[i-1]}
+  }
+  unique.sampling.times<-unique(sampling.times)
+  sampled.lineages = NULL
+  for (sample.time in unique.sampling.times){
+   sampled.lineages = c(sampled.lineages,
+    sum(sampling.times == sample.time))  
+  }
+return(list(coal.times=sorted.coal.times, sample.times = unique.sampling.times, sampled.lineages=sampled.lineages))  
+}
+
+
+data.hiv<-heterochronous.gp.stat(out.tree)
+
+coal_times=data.hiv$coal.times
+samp_times=data.hiv$sample.times
+n_sampled=data.hiv$sampled.lineages
 
 
 
