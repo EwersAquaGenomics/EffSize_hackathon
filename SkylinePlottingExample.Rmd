@@ -10,6 +10,7 @@ Start by simulating a multiPhylo object from the "ape" package.
 
 ```{r}
 library(ape)
+library(multiNe)
 trs<-rmtree(N=5,n=20)
 ```
 
@@ -25,15 +26,11 @@ The conf.int table can also be plotted directly using conf.int.skyline, with the
 conf.int.skyline(conf.int,epsilon=0.01)
 ```
 
-This can also be used to print piecewise linear functions such as the output of INLA.
+This can also be used to graph piecewise linear functions such as the output of INLA.
 
 ```{r}
-library(multiNe)
 tree<-simulate.tree(n=20,N=1)$out[[1]]
-
-ci<-coalescent.intervals(tree)
-data1<-cbind(ci$interval.length,ci$lineages)
-result<-.calculate.moller(data1,100,sum(ci$interval.length))
-
+tree<-rmtree(N=5,n=20)
+result<-calculate.moller(tree,lengthout=100,L=1)
 conf.int.skyline(result,epsilon=0.01,plot_type="linear")
 ```
