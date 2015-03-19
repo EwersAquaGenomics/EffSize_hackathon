@@ -5,13 +5,15 @@ date: "`r date()`"
 output: html_document
 ---
 
-Estimate all kinds of measures of effective population size, using all kinds of pop gen data
+Simulate genealogies under different scenarios   
+Simulate data under different scenarios   
+Estimate all kinds of measures of effective population size, using all kinds of pop gen data   
      
 Input formats:     
-sample of coalescent trees (coalescent Ne only?)
-DNA alignment
-SNP data
-microsatellite data
+sample of coalescent trees (coalescent Ne only?): phylo object   
+DNA alignment: genind object?   
+SNP data - large: genlight, small: genind object?   
+microsatellite data: genind object?   
     
 **Ne based on coalescent approach (skyline plots)**
     
@@ -23,18 +25,25 @@ SNP data: sampletrees written in C++, and assisting R package Rsampletrees http:
 microsatellite data: BEAST http://www.genetics.org/content/188/1/151.full     
 DNA alignments: several methods in R -> George    
     
-    
 Step 2:    
 skyline plots?    
 
 Programs that make skyline plots:       
 function skyline{ape}    
 package VarEff takes microsatellite data and makes skyline plot, but was removed from R repository    
+onesamp ABC based on summary statistics
+
 
 **Ne based on linkage disequilibrium**   
 requires haploid?/diploid alleles from >= 2 polymorphic loci    
 LDNe -> no longer maintained    
 NeEstimator2  
+Weir 1979
+England et al 2006
+Waples 2006
+Waples and Do 2008
+Waples and Do 2009
+
 
 **Ne based on heterozygote excess**   
 requires haploid/diploid alleles from >= 1 polymorphic locus    
