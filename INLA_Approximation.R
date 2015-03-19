@@ -175,7 +175,9 @@ library("INLA")
   #  data<-list(y=event[-1],event=event[-1],time=time[-1],E=log(E.factor[-1]))
   formula<-y~-1+f(time,model="rw1",hyper=list(prec = list(param = c(.001, .001))),constr=FALSE)
   mod.moller.constant<-inla(formula,family="poisson",data=data,offset=E,control.predictor=list(compute=TRUE))
-  return(list(result=mod.moller.constant,grid=grid))
+  
+  return(stan_output(list(result=mod.moller.constant,grid=grid)))
+    
 }
 
 
@@ -207,3 +209,14 @@ plot_INLA = function(INLA_out, traj=NULL, xlim=NULL, ...)
     lines(grid, traj(grid))
 }
 
+stan_output<-function(INLA_out){
+  mod = INLA_out$result$summary.random$time
+  grid = mod$"ID"
+  
+  results<-matrix(NA,nrow=length(grid),ncol=4)
+  results[,1]<-grid
+  results[,3]<-exp(-mod$"0.975quant")
+  results[,2]<-exp(-mod$"0.025quant")
+  results[,4]<-exp(-mod$"0.5quant")
+  return(results)
+}
