@@ -1,0 +1,58 @@
+Estimation of Ne using INLA from a single genealogy
+========================================================
+
+This tutorial implements the function in 
+http://www.auai.org/uai2012/papers/310.pdf
+
+Example
+==================================
+We will first simulate two genealogies with 50 tips from a bottleneck demographic scenario. The first genealogy is isochronous and the second one is heterochronous
+
+```{r}
+source("simulate_trees.R")
+install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")
+library(ape)
+
+bottleneck_traj<-function(t){
+  result=rep(0,length(t))
+  result[t<=0.5]<-1
+  result[t>0.5 & t<1]<-.1
+  result[t>=1]<-1
+  return(result)
+}
+
+my.out3<-simulate.tree(n=50,N=1,simulator="thinning",Ne=bottleneck_traj,max=11)
+my.out3
+
+plot(my.out3$out[[1]],show.tip.label=FALSE)
+axisPhylo()
+set.seed(123)
+samp_times = c(0, sort(runif(40, 0, .8)))
+n_sampled = c(10, rep(1, 40))
+sample<-cbind(n_sampled,samp_times)
+my.out4<-simulate.tree(n=10,N=1,simulator="thinning",Ne=bottleneck_traj,max=11,sampling="hetero",sample=sample)
+my.out4
+
+plot(my.out4$out[[1]],show.tip.label=FALSE)
+
+```
+For the first genealogy, the following function uses the INLA method to infer Ne at 100 points:
+```{r}
+
+source("INLA_Approximation.R")
+
+ci<-coalescent.intervals(my.out3$out[[1]])
+data1<-cbind(ci$interval.length,ci$lineages)
+result<-.calculate.moller(data1,100,sum(ci$interval.length))
+
+
+```
+Let's compare it with Skyline plot
+
+```{r}
+plot(skyline(my.out3$out[[1]]))
+points(seq(0,1,.01),bottleneck_traj(seq(0,1,.01)),type="S",lty=2,col="red")
+
+
+```
+

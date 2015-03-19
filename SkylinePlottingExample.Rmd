@@ -1,0 +1,21 @@
+---
+title: "SkylinePlottingExample"
+output: html_document
+---
+
+This demonstrates how to plot a skyline from a multiPhylo object.
+
+Start by simulating a multiPhylo object from the "ape" package.
+
+
+```{r}
+library(ape)
+trs<-rmtree(N=5,n=20)
+```
+
+Now if you call the main function this will provide a skyline plot and a table with the median and 2.5 and 97.5 %iles at each time point. 
+
+```{r}
+conf.int<-Phylos2Skylines_anchor(trees=trs,output_type="conf.int.plot",plot_type="linear")
+```
+
