@@ -1,13 +1,13 @@
 Simulation of Genealogies with the Coalescent
 ========================================================
 
-Ape, pegas, phyclust and phylodyn have functions that simulates genealogies under the coalescent model for specific demographic scenarios. We will consider the following demographic models
+Ape, phyclust (ms) and phylodyn have functions that simulates genealogies under the coalescent model for specific demographic scenarios. We will consider the following demographic models
 
 A Genealogy (tree) consist of Topology and coalescent times. 
 
-*Topology can be isochronous (all tips are "sampled" at time 0) or heterochronous (tips have different "sampling times"). Lineages merge (coalesce) at random between the existant lineages at the coalescent times. For isochronous coalescent we can generate a topology independently of the coalescent times but that is not the case for heterochronous topologies.   
+* Topology can be *isochronous* (all tips are "sampled" at time 0) or heterochronous (tips have different "sampling times"). Lineages merge (coalesce) at random between the existant lineages at the coalescent times. For isochronous coalescent we can generate a topology independently of the coalescent times but that is not the case for heterochronous topologies.   
 
-*Coalescent times are exponentially distributed random variables with a rate that depends on the number of lineages and the population size trajectory. Again, for isochronous we can generate those times independently of the topology but not for the heterochronous case. 
+* Coalescent times are exponentially distributed random variables with a rate that depends on the number of lineages and the population size trajectory. Again, for isochronous we can generate those times independently of the topology but not for the heterochronous case. 
 
 
 The demographic models are:
@@ -20,7 +20,7 @@ The demographic models are:
 
 4. Exponential double growth model 
 
-5. Any R function for defining $N_{e}$ 
+5. Any R function for defining $$N_{e}$$ 
 
 
 Examples
@@ -47,19 +47,20 @@ bottleneck_traj_inv<-function(t){
 	return(1/bottleneck_traj(t))
 }
 library("devtools")
-install_github("phylodyn", username="mdkarcher")
+install_github("mdkarcher/phylodyn")
 library("phylodyn")
 sample<-c(10,0)
-simul_times<-coalgen_thinning_iso(sample,bottleneck_traj_inv,upper=1)
+simul_times<-coalgen_thinning_iso(sample,bottleneck_traj_inv,upper=10)
 my.tree3<-rcoal(50,br=simul_times$intercoal_times)
 ```
 
 We can simulate the coalescent times with a specic population size trajectory and with specific sampling times.
 ```{r}
+set.seed(123)
 samp_times = c(0, sort(runif(40, 0, .8)))
 n_sampled = c(10, rep(1, 40))
 sample<-cbind(n_sampled,samp_times)
-simul_times = coalgen_thinning_hetero(sample=sample, trajectory=bottleneck_traj)
+simul_times = coalgen_thinning_hetero(sample=sample, trajectory=bottleneck_traj_inv,upper=10)
 args = gen_INLA_args(coal_times=cumsum(simul_times$intercoal_times), s_times=samp_times, n_sampled=n_sampled)
 my.tree4<-generate_newick(args,sample)$newick #takes the input generated in gen_INLA_args function and sample
 
@@ -118,38 +119,216 @@ Wrapper for Genealogy simulation
 sample<-cbind(n_sampled,samp_times)
 
 
-simulate.tree<-function(n=10,N=1,sampling="iso",args="-T -G 0.1",Ne=1,max=1,simulator=NULL,sample=NULL){
+
+
+simulate.tree<-function(n=10,N=1,sampling="iso",args="-T -G 0.1",Ne=1,max=1,simulator=NULL,sample=NULL, ...){
   if (is.null(simulator)) {
 #Generates samples using rcoal with Ne=1. If this is a mistake, specify your simulator (ms,thinning,standard)
     out<-replicate(N,rcoal(n),simplify=FALSE)
     class(out)<-"multiPhylo"
-    return(out)
+    return(list(out=out,description="Simulation from a constant population size Ne=1"))
     }
   if (simulator=="ms"){
+    library("phyclust")
     if (is.null(args)){args<-"-T"}
     out<-read.tree(text=paste(rep(ms(nsam = n, opts = args)[3],N),sep="\n"))  
-    return(out)
+    return(list(out=out,description=paste("Simulation using ms with args:",args,sep=" ")))
   }
   if (simulator=="thinning"){
-    if (is.function(Ne)){
-    ##Some functions needed for thinning
-     fun_inv<-function(t){
-     return(1/Ne(t))
-     }
+         if (is.function(Ne)){
+          ##A function is needed for thinning
+              fun_inv<-function(t,...){
+               return(1/Ne(t,...))
+              }
+              }
+         if (is.null(Ne)){
+           fun_inv<-function(t){
+             return(1)
+           }
+         }
+
+     
+         coalgen_thinning_iso<-function(sample, trajectory, upper = 25, ...) {
+                s = sample[2]
+                n <- sample[1]
+                out <- rep(0, n - 1)
+                time <- 0
+                j <- n
+                while (j > 1) {
+                    time_p <- time + rexp(1, upper * j * (j - 1) * 0.5)
+                    if (upper< trajectory(time_p, ...) ){
+                     upper<-trajectory(time_p, ...)*1.2
+                      time_p <- time + rexp(1, upper * j * (j - 1) * 0.5)
+                     }
+                    time<-time_p
+                    if (runif(1) <= trajectory(time, ...)/upper) {
+                      out[n - j + 1] <- time
+                      j <- j - 1
+                    }
+                }
+                return(list(intercoal_times = c(out[1], diff(out)), lineages = seq(n, 2, -1),upper=upper))
+              }
+         
+         gen_INLA_args<-function (coal_times, s_times, n_sampled) {
+             n = length(coal_times) + 1
+            data = matrix(0, nrow = n - 1, ncol = 2)
+            data[, 1] = coal_times
+            s_times = c(s_times, max(data[, 1]) + 1)
+            data[1, 2] = sum(n_sampled[s_times <= data[1, 1]])
+            tt = length(s_times[s_times <= data[1, 1]]) + 1
+            for (j in 2:nrow(data)) {
+              if (data[j, 1] < s_times[tt]) {
+                  data[j, 2] = data[j - 1, 2] - 1
+                }
+            else {
+              data[j, 2] = data[j - 1, 2] - 1 + sum(n_sampled[s_times > 
+                data[j - 1, 1] & s_times <= data[j, 1]])
+              tt = length(s_times[s_times <= data[j, 1]]) + 1
+            }
+          }
+          s = unique(sort(c(data[, 1], s_times[1:length(s_times) - 1])))
+          event1 = sort(c(data[, 1], s_times[1:length(s_times) - 1]), index.return = TRUE)$ix
+          n = nrow(data) + 1
+          l = length(s)
+          event = rep(0, l)
+          event[event1 < n] = 1
+          y = diff(s)
+          coal.factor = rep(0, l - 1)
+          t = rep(0, l - 1)
+          indicator = cumsum(n_sampled[s_times < data[1, 1]])
+          indicator = c(indicator, indicator[length(indicator)] - 1)
+          ini = length(indicator) + 1
+          for (k in ini:(l - 1)) {
+                j = data[data[, 1] < s[k + 1] & data[, 1] >= s[k], 2]
+                if (length(j) == 0) {
+                indicator[k] = indicator[k - 1] + sum(n_sampled[s_times < 
+                s[k + 1] & s_times >= s[k]])
+                }
+                if (length(j) > 0) {
+                  indicator[k] = j - 1 + sum(n_sampled[s_times < s[k +1] & s_times >= s[k]])
+              }
+          }
+        coal_factor = indicator * (indicator - 1)/2
+        return(list(coal_factor = coal_factor, s = s, event = event, indicator = indicator))
+}
+
+         
+         coalgen_thinning_hetero<-function (sample, trajectory, upper = 25, ...) {
+            n_sampled<-sample[,1]
+            s_times<-sample[,2]
+            s = sample[1, 2]
+            b <- sample[1, 1]
+            n <- sum(sample[, 1]) - 1
+            m <- n
+            nsample <- nrow(sample)
+            sample <- rbind(sample, c(0, 10 * max(sample, 2)))
+            out <- rep(0, n)
+            branches <- rep(0, n)
+            i <- 1
+            while (i < (nsample)) {
+              if (b < 2) {
+                b <- b + sample[i + 1, 1]
+                s <- sample[i + 1, 2]
+                i <- i + 1
+            }
+        E <- rexp(1, upper * b * (b - 1) * 0.5)
+        if (upper< trajectory(E+s, ...) ){
+                     upper<-trajectory(E+s, ...)*1.2
+                      E <- rexp(1, upper * b * (b - 1) * 0.5)
+                     }
+        
+        if (runif(1) <= trajectory(E + s, ...)/upper) {
+            if ((s + E) > sample[i + 1, 2]) {
+                b <- b + sample[i + 1, 1]
+                s <- sample[i + 1, 2]
+                i <- i + 1
+            }
+            else {
+                s <- s + E
+                out[m - n + 1] <- s
+                branches[m - n + 1] <- b
+                n <- n - 1
+                b <- b - 1
+            }
+        }
+        else {
+            s <- s + E
+        }
+    }
+    while (b > 1) {
+        E <- rexp(1, upper * b * (b - 1) * 0.5)
+        if (runif(1) <= trajectory(E + s, ...)/upper) {
+            s <- s + E
+            out[m - n + 1] <- s
+            branches[m - n + 1] <- b
+            n <- n - 1
+            b <- b - 1
+        }
+        else {
+            s <- s + E
+        }
+    }
+    intercoal_times = c(out[1], diff(out))
+    lineages = branches
+    coal_times<-cumsum(intercoal_times)
+    args<-gen_INLA_args(coal_times,s_times,n_sampled)
+    out<-generate_newick(args,cbind(n_sampled,s_times))$newick
+    return(list(out=out))
+}
+
+
+
      #upper is an upper bound on fun_inv
-     }else{
-       #"No function Ne provided for thinning"
+     if (sampling=="iso"){
+       
+       if (is.null(sample)){
+              sample<-c(n,0)
+            }
+       out<-replicate(N,rcoal(n,br=coalgen_thinning_iso(sample,fun_inv,max)$intercoal_times),simplify=FALSE)
+       class(out)<-"multiPhylo"
+      
+      return(list(out=out,description="isochronous simulation using thinning with trajectory provided"))
+        
+
      }
-     }
+
+# else{
+#        #sampling is heterochronous
+#         if (is.null(sample)){ #it is actually isochronous
+#          sample<-c(n,0)
+#          out<-replicate(N,rcoal(n,br=coalgen_thinning_iso(sample,fun_inv,max,...)$intercoal_times),simplify=FALSE)
+#        class(out)<-"multiPhylo"
+#       
+#       return(list(out=out,description="isochronous simulation using thinning with trajectory provided"))
+#       }else{
+#         return(1)
+#         #It is indeed heterochronous
+#        #     out<-replicate(N,coalgen_thinning_hetero(sample, fun_inv,max, ...),simplify=FALSE)     
+#         #    class(out)<-"multiPhylo" 
+#     #return(list(out=out,description="Simulation with thinning for heterochronous coalescent with a specific function"))
+#   
+#         }
+#  }
+}
     
 }
 
 
-my.out<-simulate.tree(n=10,N=2)
-my.out<-simulate.tree(n=10,N=2,simulator="ms",args="-T -G 0.1")
-my.out<-simulate.tree(n=10,N=2,simulator="thinning",Ne=bottleneck_traj_inv,max=1)
-
-
+my.out1<-simulate.tree(n=10,N=2)
+my.out1
+my.out2<-simulate.tree(n=10,N=2,simulator="ms",args="-T -G 0.1")
+my.out2
+my.out3<-simulate.tree(n=10,N=4,simulator="thinning",Ne=bottleneck_traj,max=10)
+my.out3
+par(mfrow=c(2,2))
+plot(my.out3$out[[1]])
+axisPhylo()
+plot(my.out3$out[[2]])
+axisPhylo()
+plot(my.out3$out[[3]])
+axisPhylo()
+plot(my.out3$out[[4]])
+axisPhylo()
 
 ```
 
@@ -199,6 +378,18 @@ Skyline Plot (ape)
 # Bayesian Skytrack
 # Likelihood Estimator
 
+```
+
+Inference from other
+=====================================
+```{r}
+library(pegas)
+require(adegenet)
+data(nancycats)
+## convert the data and compute frequencies:
+S <- summary(as.loci(nancycats))
+## compute THETA for all loci:
+sapply(S, function(x) theta.h(x$allele))
 ```
 
 
