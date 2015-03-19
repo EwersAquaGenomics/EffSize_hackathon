@@ -1,3 +1,15 @@
+#' @title ms2ms
+#' @description Simulates microsatellite data by implementing the code of Pidugu and Schlotterer (2006) in R.
+#' @description Depends on a input simulated in ms. 
+#' 
+#' @author Rebecca Harris <rbharris@@uw.edu>
+#' 
+#' @return A genind object of simulated microsatellite data.
+#' 
+#' @param ms.output Output from ms (library phyclust)
+#' @examples ms.out <- ms(nsam = 20, nreps = 10, args = "-t 3 -I 2 10 10 -ej 0.2 2 1")
+#' @examples ms2ms(ms.out)
+
 ms2ms <- function(ms.output){
 	cmd <- strsplit(ms.output[1], " ")[[1]]
 	nsam <- as.numeric(cmd[2])
