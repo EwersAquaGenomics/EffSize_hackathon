@@ -3,8 +3,6 @@
 #'@param args is a list with coal_factor, sampling and coalescent times, events and indicator. This is the output of gen_INLA_args().
 #'@param sample is a matrix or vector. The first column indicates the number of samples and the second column indicates the sampling times
 #'@author Julia Palacios \email{julia.pal.r@@gmail.com}
-#'@examples
-#'generate_newick()
 #'
 
 .generate_newick<-function (args, sample) 
@@ -62,7 +60,6 @@
 #'@param trajectory is a function with the population size function
 #'@param upper is an upper value of inverse trajectory (optional)
 #'@author Julia Palacios \email{julia.pal.r@@gmail.com}
-#'@examples
 
 .coalgen_thinning_iso<-function(sample, trajectory, upper = 25, ...) {
   s = sample[2]
@@ -92,7 +89,6 @@
 #'@param trajectory is a function with the population size function
 #'@param upper is an upper value of inverse trajectory (optional)
 #'@author Julia Palacios \email{julia.pal.r@@gmail.com}
-#'@examples
 
 .coalgen_thinning_hetero<-function (sample, trajectory, upper = 25, ...) {
   n_sampled<-sample[,1]
@@ -163,8 +159,7 @@
 #'@param s_times indicates the sampling times
 #'@param n_sampled the number of samples 
 #'@author Julia Palacios \email{julia.pal.r@@gmail.com}
-#'@examples
-
+#'
 .gen_INLA_args<-function (coal_times, s_times, n_sampled) {
   n = length(coal_times) + 1
   data = matrix(0, nrow = n - 1, ncol = 2)

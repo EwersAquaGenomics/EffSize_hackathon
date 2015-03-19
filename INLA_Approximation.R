@@ -1,4 +1,3 @@
-library("INLA")
 #'@title .calculate.moller.hetero
 #'@description Approximates the posterior distribution of Ne from a single genealogy at a regular grid of points using INLA package
 #'@param coal.factor is a vector with coalescent times in increasing order 
@@ -11,9 +10,6 @@ library("INLA")
 #'@param alpha TODO
 #'@param beta TODO
 #'@author Julia Palacios \email{julia.pal.r@@gmail.com}
-#'@examples
-#'
-#'
 
 .calculate.moller.hetero<-function (coal.factor, s, event, lengthout, prec_alpha = 0.01, 
           prec_beta = 0.01, E.log.zero = -100, alpha = NULL, beta = NULL) 
@@ -109,9 +105,6 @@ library("INLA")
 #'@param lengthout number of grid points
 #'@param L the length for the definition of the grid
 #'@author Julia Palacios \email{julia.pal.r@@gmail.com}
-#'@examples
-#'
-#'
 
 .calculate.moller<-function(data1,lengthout,L){
   s<-cumsum(data1[,1])
@@ -187,9 +180,7 @@ library("INLA")
 #'@param traj the true trajectory
 #'@param xlim
 #'@author Julia Palacios \email{julia.pal.r@@gmail.com}
-#'@examples
-#'
-#'
+
 plot_INLA = function(INLA_out, traj=NULL, xlim=NULL, ...)
 {
   mod = INLA_out$result$summary.random$time
