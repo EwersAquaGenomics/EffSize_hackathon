@@ -24,6 +24,7 @@ The demographic models are:
 
 We will use the function simulate.tree to generate a simulation from any type of topology (isochronous or heterochronous) and from any demographic model.
 
+Here, time is measure in units of N_{0} generations.
 
 Examples
 ==================================
