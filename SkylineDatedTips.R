@@ -15,6 +15,7 @@
 #' @description Drummond et al (2005) Mol. Biol. Evol.
 #' 
 #' @author Lucy Mengqi Li <mengqi.li09@@imperial.ac.uk>
+#' @examples library(ape)
 #' @examples trees <- rmtree(N=5,n=20)
 #' @examples coalescent.intervals.datedPhylo(trees)
 
@@ -75,6 +76,7 @@ coalescent.intervals.datedPhylo <- function (tr) {
 #' @description For a given datedCI object return the skyline for each coalescent interval
 #' 
 #' @author Lucy Mengqi Li <mengqi.li09@@imperial.ac.uk>
+#' @examples library(ape)
 #' @examples trees <- rmtree(N=5,n=20)
 #' @examples ci <- coalescent.intervals.datedPhylo(trees)
 #' @examples skyline.with.sampling(ci)
@@ -114,6 +116,7 @@ skyline.with.sampling <- function (ci) {
 #' @description Like skyline() from ape but takes the class "datedPhylo"
 #' 
 #' @author Lucy Mengqi Li <mengqi.li09@@imperial.ac.uk>
+#' @examples library(ape)
 #' @examples trees <- rmtree(N=5,n=20)
 #' @examples skyline.datedPhylo(trees)
 
@@ -132,8 +135,8 @@ skyline.datedPhylo <- function (tr) {
 # #' @description Requires input from posterior sample of trees and parameters e.g. BEAST
 # #' 
 # #' @author Lucy Mengqi Li <mengqi.li09@@imperial.ac.uk>
+# #' @examples library(ape)
 # #' @examples trees <- rmtree(N=5,n=20)
-# #' @examples write <- rmtree(N=5,n=20)
 # #' @examples Phylos2Skylines(trees)
 # #' 
 # 

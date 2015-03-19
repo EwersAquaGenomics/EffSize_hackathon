@@ -16,6 +16,24 @@ trs<-rmtree(N=5,n=20)
 Now if you call the main function this will provide a skyline plot and a table with the median and 2.5 and 97.5 %iles at each time point. 
 
 ```{r}
-conf.int<-Phylos2Skylines_anchor(trees=trs,output_type="conf.int.plot",plot_type="linear")
+conf.int<-Phylos2Skylines_anchor(trees=trs,output_type="conf.int.plot")
 ```
 
+The conf.int table can also be plotted directly using conf.int.skyline, with the epsilon value indicating the amount of smoothing (i.e. it specifies the )
+
+```{r}
+conf.int.skyline(conf.int,epsilon=0.01)
+```
+
+This can also be used to print piecewise linear functions such as the output of INLA.
+
+```{r}
+library(multiNe)
+tree<-simulate.tree(n=20,N=1)$out[[1]]
+
+ci<-coalescent.intervals(tree)
+data1<-cbind(ci$interval.length,ci$lineages)
+result<-.calculate.moller(data1,100,sum(ci$interval.length))
+
+conf.int.skyline(result,epsilon=0.01,plot_type="linear")
+```

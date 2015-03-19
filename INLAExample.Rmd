@@ -8,6 +8,11 @@ Example
 ==================================
 We will first simulate two genealogies with 50 tips from a bottleneck demographic scenario. The first genealogy is isochronous and the second one is heterochronous
 
+```{r, echo=FALSE}
+setwd("~/Documents/Hackathon/multiNe/R")
+```
+
+
 ```{r}
 source("simulate_trees.R")
 install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")

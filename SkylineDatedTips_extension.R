@@ -9,6 +9,7 @@
 #' 
 #' @param x A phylo object
 #' @param from_past If FALSE (default) the node ages increase backwards in time, with the most recent tip being zero. If TRUE the root node is zero and the node ages increase towards the tips of the tree.
+#' @examples library(ape)
 #' @examples trees <- rmtree(N=5,n=20)
 #' @examples Phylos2Skylines_anchor(trees)
 
@@ -45,6 +46,7 @@ getNodeAges<-function(x,from_past=F)
 #' @param scaling: a scaling factor for the branch lengths, if the branch lengths are not on the same scale as time. 
 #' 
 #' @author Lucy Mengqi Li <mengqi.li09@@imperial.ac.uk>, adapted by George Shirreff <georgeshirreff@@gmail.com>
+#' @examples library(ape)
 #' @examples trees <- rmtree(N=5,n=20)
 #' @examples Phylos2Skylines_anchor(trees)
 #' 
@@ -185,10 +187,11 @@ Phylos2Skylines_anchor <- function (trees, output_type=c("list","matrices","mast
 #' 
 #' @return A plot with median in black and confidence intervals in red
 #' 
+#' @examples library(ape)
 #' @examples trees <- rmtree(N=5,n=20)
 #' @examples conf.int<-Phylos2Skylines_anchor(trees,output_type="conf.int")
 
-conf.int.skyline<-function(conf.int,epsilon=0,plot_type=c("linear","step"),...)
+conf.int.skyline<-function(conf.int,epsilon=0,plot_type=c("step"),...)
 {
   end_times<-conf.int[,1]
   plot(type="n",x=range(end_times),y=range(conf.int[,-1]),ylab=expression(N[e]*tau),cex.lab=1,cex.axis=1,...)
@@ -205,13 +208,14 @@ conf.int.skyline<-function(conf.int,epsilon=0,plot_type=c("linear","step"),...)
 #' 
 #' @return Draws the lines of a skyline, but with a minimum time interval specified by epsilon
 #' 
+#' @examples library(ape)
 #' @examples trees <- rmtree(N=5,n=20)
 #' @examples conf.int<-Phylos2Skylines_anchor(trees,output_type="conf.int")
 #' @examples end_times<-as.numeric(rownames(conf.int))
 #' @examples plot(type="n",x=range(end_times),y=range(conf.int),ylab=expression(N[e]*tau))
 #' @examples draw_skyline_smooth(end_times,pop_size=conf.int[,1],col=1,epsilon=0.1)
 
-skyline_smooth<-function(end_times,pop_size,epsilon=0,plot_type=c("linear","step"),...)
+skyline_smooth<-function(end_times,pop_size,epsilon=0,plot_type=c("step"),...)
 {
   if(epsilon==0)
   {
@@ -257,7 +261,7 @@ skyline_smooth<-function(end_times,pop_size,epsilon=0,plot_type=c("linear","step
     }
   }
   
-  draw_skyline(end_times,pop_size,plot_type=plot_type,...)
+  draw_skyline(end_times_out,pop_size_out,plot_type=plot_type,...)
 }
 
 
@@ -268,6 +272,7 @@ skyline_smooth<-function(end_times,pop_size,epsilon=0,plot_type=c("linear","step
 #' 
 #' @return Draws the lines of a skyline (step) or INLA (piece-wise linear)
 #' 
+#' @examples library(ape)
 #' @examples trees <- rmtree(N=5,n=20)
 #' @examples conf.int<-Phylos2Skylines_anchor(trees,output_type="conf.int")
 #' @examples end_times<-as.numeric(rownames(conf.int))
