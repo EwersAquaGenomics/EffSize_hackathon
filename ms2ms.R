@@ -1,5 +1,3 @@
-#Example ms string: ms.output <- ms(nsam = 10, nreps = 5, opts = "-t 10 -I 2 6 4 2 -ej 0.2 2 1")
-
 ms2ms <- function(ms.output){
 	cmd <- strsplit(ms.output[1], " ")[[1]]
 	nsam <- as.numeric(cmd[2])
@@ -52,4 +50,3 @@ ms2ms <- function(ms.output){
 	full.mat <- genind(tab = full.mat, pop = as.numeric(unlist(strsplit(ind.nam, ".p"))[seq(2, nsam, 2)]))
 	return(full.mat)
 }
-ms2ms(ms.output)@tab
