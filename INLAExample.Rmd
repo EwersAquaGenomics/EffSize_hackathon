@@ -10,7 +10,7 @@ We will first simulate two genealogies with 50 tips from a bottleneck demographi
 
 ```{r}
 source("simulate_trees.R")
-install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")
+#install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")
 library(ape)
 
 bottleneck_traj<-function(t){
