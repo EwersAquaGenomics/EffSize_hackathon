@@ -273,7 +273,7 @@ simulate.tree<-function(n=10,N=1,sampling="iso",args="-T -G 0.1",Ne=1,max=1,simu
     coal_times<-cumsum(intercoal_times)
     args<-gen_INLA_args(coal_times,s_times,n_sampled)
     out<-generate_newick(args,cbind(n_sampled,s_times))$newick
-    return(list(out=out))
+    return(out)
 }
 
 
@@ -292,23 +292,22 @@ simulate.tree<-function(n=10,N=1,sampling="iso",args="-T -G 0.1",Ne=1,max=1,simu
 
      }
 
-# else{
+ else{
 #        #sampling is heterochronous
-#         if (is.null(sample)){ #it is actually isochronous
-#          sample<-c(n,0)
-#          out<-replicate(N,rcoal(n,br=coalgen_thinning_iso(sample,fun_inv,max,...)$intercoal_times),simplify=FALSE)
-#        class(out)<-"multiPhylo"
-#       
-#       return(list(out=out,description="isochronous simulation using thinning with trajectory provided"))
-#       }else{
-#         return(1)
-#         #It is indeed heterochronous
-#        #     out<-replicate(N,coalgen_thinning_hetero(sample, fun_inv,max, ...),simplify=FALSE)     
-#         #    class(out)<-"multiPhylo" 
-#     #return(list(out=out,description="Simulation with thinning for heterochronous coalescent with a specific function"))
+         if (is.null(sample)){ #it is actually isochronous
+          sample<-c(n,0)
+          out<-replicate(N,rcoal(n,br=coalgen_thinning_iso(sample,fun_inv,max)$intercoal_times),simplify=FALSE)
+        class(out)<-"multiPhylo"
+       
+       return(list(out=out,description="isochronous simulation using thinning with trajectory provided"))
+       }else{
+         #It is indeed heterochronous
+       out<-replicate(N,coalgen_thinning_hetero(sample, fun_inv,max),simplify=FALSE)     
+       class(out)<-"multiPhylo" 
+     return(list(out=out,description="Simulation with thinning for heterochronous coalescent with a specific function"))
 #   
-#         }
-#  }
+         }
+ }
 }
     
 }
@@ -320,6 +319,12 @@ my.out2<-simulate.tree(n=10,N=2,simulator="ms",args="-T -G 0.1")
 my.out2
 my.out3<-simulate.tree(n=10,N=4,simulator="thinning",Ne=bottleneck_traj,max=10)
 my.out3
+my.out4<-simulate.tree(n=10,N=2,simulator="thinning",Ne=bottleneck_traj,max=10,sampling="hetero")
+my.out4
+
+my.out4<-simulate.tree(n=10,N=2,simulator="thinning",Ne=bottleneck_traj,max=10,sampling="hetero",sample=sample)
+my.out4
+
 par(mfrow=c(2,2))
 plot(my.out3$out[[1]])
 axisPhylo()
@@ -329,6 +334,15 @@ plot(my.out3$out[[3]])
 axisPhylo()
 plot(my.out3$out[[4]])
 axisPhylo()
+mtext("Isochronous",side=3,line=-1.5,outer=TRUE)
+
+par(mfrow=c(1,2))
+plot(my.out4$out[[1]],show.tip.label=FALSE)
+axisPhylo()
+plot(my.out4$out[[2]],show.tip.label=FALSE)
+axisPhylo()
+mtext("Heterochronous",side=3,line=-1.5,outer=TRUE)
+
 
 ```
 
