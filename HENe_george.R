@@ -6,27 +6,41 @@
 # missing: removing samples with allele frequency < X
 # missing: confidence intervals / bootstrapping
 
-require(adegenet)
-data(nancycats)
+#' @title getSampleSize_byLocus 
+#' @description Takes a genind object and returns the number of samples occurring at each locus
+#' 
+#' @author George Shirreff <georgeshirreff@@gmail.com>
+#' 
+#' @examples library(adegenet)
+#' @examples data(nancycats)
+#' @examples getSampleSize_byLocus(nancycats)
+#' 
+getSampleSize_byLocus <- function(genind_obj)
+{
+  K<-length(genind_obj@all.names)
+  
+  ends<-cumsum(genind_obj@loc.nall)
+  starts<-c(0,ends[-length(ends)])+1
+  
+  sample_sizes<-numeric(K)
+  i=4
+  for (i in 1:K){
+    sample_sizes[i]<-sum(na.rm=T,genind_obj@tab[,starts[i]:ends[i]])
+  }
+  return(sample_sizes)
+}
 
-HENe(nancycats)
+#' @title HENe 
+#' @description Calculates population size from a genind object by heterozygote excess
+#' 
+#' @author Christine Ewers-Saucedo <ewers.christine@@gmail.com>, George Shirreff <georgeshirreff@@gmail.com>
+#' 
+#' @examples library(adegenet)
+#' @examples data(nancycats)
+#' @examples HENe(nancycats)
+#' 
 
 HENe <- function(genind_obj) {
-  
-  getSampleSize_byLocus <- function(genind_obj)
-  {
-    K<-length(genind_obj@all.names)
-    
-    ends<-cumsum(genind_obj@loc.nall)
-    starts<-c(0,ends[-length(ends)])+1
-    
-    sample_sizes<-numeric(K)
-    i=4
-    for (i in 1:K){
-      sample_sizes[i]<-sum(na.rm=T,genind_obj@tab[,starts[i]:ends[i]])
-    }
-    return(sample_sizes)
-  }
   
   K <- length(genind_obj@all.names)
   genind.by.locus <- seploc(genind_obj, res.type="matrix", truenames=F)
