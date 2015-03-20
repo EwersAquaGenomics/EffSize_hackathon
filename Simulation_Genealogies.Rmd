@@ -30,7 +30,8 @@ Examples
 ==================================
 The following example generate 2 isochronous trees from a constant population size (Ne=1) with 10 tips.
 ```{r}
-source("simulate_trees.R")
+library("devtools")
+install_github("georgeshirreff/multiNe")
 library(ape)
 
 my.out1<-simulate.tree(n=10,N=2)
@@ -102,6 +103,7 @@ axisPhylo()
 mtext("Heterochronous Bottleneck",side=3,line=-1.5,outer=TRUE)
 
 ```
+
 
 
 
