@@ -40,6 +40,8 @@ setGeneric(name="getSampleSize_byLocus",
 )
 
 
+
+
 setGeneric(name="getHeterozygoteNumbers",
    #   signature="genind",
    def=function(theObject)
