@@ -8,10 +8,18 @@ Example
 ==================================
 We will first simulate two genealogies with 50 tips from a bottleneck demographic scenario. The first genealogy is isochronous and the second one is heterochronous
 
-```{r}
-source("simulate_trees.R")
-install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")
+```{r, echo=FALSE}
+install.packages("devtools")
+library("devtools")
+install_github("georgeshirreff/multiNe")
+library(multiNe)
 library(ape)
+#setwd("~/Documents/Hackathon/multiNe/R")
+```
+
+
+```{r}
+#install.packages("INLA", repos="http://www.math.ntnu.no/inla/R/stable")
 
 bottleneck_traj<-function(t){
   result=rep(0,length(t))
@@ -21,7 +29,7 @@ bottleneck_traj<-function(t){
   return(result)
 }
 
-my.out3<-simulate.tree(n=50,N=1,simulator="thinning",Ne=bottleneck_traj,max=11)
+my.out3<-simulate.tree(n=50,N=10,simulator="thinning",Ne=bottleneck_traj,max=11)
 my.out3
 
 plot(my.out3$out[[1]],show.tip.label=FALSE)
@@ -39,19 +47,21 @@ plot(my.out4$out[[1]],show.tip.label=FALSE)
 For the first genealogy, the following function uses the INLA method to infer Ne at 100 points:
 ```{r}
 
-source("INLA_Approximation.R")
+library("INLA")
+result<-calculate.moller(my.out3$out[[1]],100,1)
+par(mfrow=c(1,1))
+plot_INLA2(result,traj=bottleneck_traj,main="Bottleneck using INLA")
 
-ci<-coalescent.intervals(my.out3$out[[1]])
-data1<-cbind(ci$interval.length,ci$lineages)
-result<-.calculate.moller(data1,100,sum(ci$interval.length))
-
+result2<-calculate.moller(my.out3$out,100,1)
+plot_INLA3(result2,traj=bottleneck_traj)
 
 ```
 Let's compare it with Skyline plot
 
 ```{r}
+par(mfrow=c(1,2))
 plot(skyline(my.out3$out[[1]]))
-points(seq(0,1,.01),bottleneck_traj(seq(0,1,.01)),type="S",lty=2,col="red")
+plot_INLA2(result,traj=bottleneck_traj,main="Bottleneck using INLA")
 
 
 ```

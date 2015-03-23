@@ -7,7 +7,9 @@
 #' @return A genind object of simulated microsatellite data.
 #' 
 #' @param ms.output Output from ms (library phyclust)
-#' @examples ms.output <- ms(nsam = 20, nreps = 10, opts = "-t 3")# -I 2 10 10 -ej 0.2 2 1")
+#' @examples library(phyclust)
+#' @examples ms.out <- ms(nsam = 20, nreps = 10, args = "-t 3 -I 2 10 10 -ej 0.2 2 1")
+#' @examples ms.out <- ms(nsam = 20, nreps = 10, opts = "-t 3 -I 2 10 10 -ej 0.2 2 1")
 #' @examples ms2ms(ms.out)
 
 ms2ms <- function(ms.output){
@@ -15,9 +17,8 @@ ms2ms <- function(ms.output){
 	nsam <- as.numeric(cmd[2])
 	nreps <- as.numeric(cmd[3])
 	find.I <- which(cmd == "-I")
-	find.I <- 4
 	# Did you specify more than one population?
-		if (!is.integer(find.I) && cmd[find.I + 1] > 1) {
+	if (length(find.I) != 0 & cmd[find.I + 1] > 1) {
 		n.pops <- as.numeric(cmd[find.I + 1])
 		n.ind.p <- as.numeric(cmd[(find.I + 2):(find.I + n.pops + 1)])
 		if (!any(n.ind.p %% 2 == 0)) {
