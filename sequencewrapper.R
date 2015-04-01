@@ -1,3 +1,21 @@
+#' @title sequence.wrapper
+#' @description A wrapper function for the sequence simulator programs ms, seqgen, simSeq, and PhyloSim.
+#' 
+#' @author Rebecca Harris <rbharris@@uw.edu>
+#' 
+#' @return Writes out sequences in phylip format to your working directory.
+#' 
+#' @param n number of sequences
+#' @param L length of sequence
+#' @param method choice of sequence simulation
+#' @param ms.args arguments passed to ms
+#' @param tree tree of format phylo
+#' @param outfile name of the file that writes out
+#' @examples sequence.wrapper(n = 10, L = 10, method = "gen.seq.HKY", tree = phylo)
+
+
+#do we want multiple trees or to run though
+
 sequence.wrapper <- function(n = 10, L = 10, method = NULL, ms.args = NULL, tree = NULL, pi.n = NULL, kappa = "", outfile = "out", ancseq = NULL, rate.in = 1){
 	if (method == "ms") {
 		if (is.null(ms.args))
@@ -41,6 +59,16 @@ sequence.wrapper <- function(n = 10, L = 10, method = NULL, ms.args = NULL, tree
 	return(read.dna(outfile))
 }
 
+#' @title ms2nuc
+#' @description Converts output of ms2ms to nucleotides.
+#' 
+#' @author Rebecca Harris <rbharris@@uw.edu>
+#' 
+#' @return 
+#' 
+#' @param
+#' @examples
+
 ms2nuc <- function(ms.res, fileout){
 	if (length(grep("positions", ms.res)) == 0)
 		print("No segregating sites. Reexecute loop or increase theta.")
@@ -52,6 +80,16 @@ ms2nuc <- function(ms.res, fileout){
 	}	
 }
 
+#' @title eq.prob
+#' @description Checks that appropriate equilibrium probabilities are specified, otherwise specifies equal probabilities. 
+#' 
+#' @author Rebecca Harris <rbharris@@uw.edu>
+#' 
+#' @return 
+#' 
+#' @param
+#' @examples
+
 eq.prob <- function(pi = NULL, n.prob = NULL){
 	if (is.null(pi)) {
 		pi <- rep(1/n.prob, n.prob)
@@ -62,6 +100,16 @@ eq.prob <- function(pi = NULL, n.prob = NULL){
 	}
 	return(pi)
 }
+
+#' @title phang2nuc
+#' @description Converts output of phangorn to nucleotides.
+#' 
+#' @author Rebecca Harris <rbharris@@uw.edu>
+#' 
+#' @return 
+#' 
+#' @param
+#' @examples
 
 phang2nuc <- function(sq = phang.seq, file = "test.out"){
 	out <- NULL
@@ -80,6 +128,16 @@ phang2nuc <- function(sq = phang.seq, file = "test.out"){
 	out2 <- rbind(paste(length(sq), length(sq[[i]])), out)
 	write(out2, file)
 }
+
+#' @title phylosim2nuc
+#' @description Converts PhyloSim output to phylip format.
+#' 
+#' @author Rebecca Harris <rbharris@@uw.edu>
+#' 
+#' @return 
+#' 
+#' @param
+#' @examples
 
 phylosim2nuc <- function(align = sim, file = "test.out"){
 	tip.seqs <- grep("s.*", rownames(align$alignment))

@@ -1,0 +1,20 @@
+March 20, 2015
+Wrap up
+
+Future tasks
+Christine: finish LDNe, Heterozygote excess and Temporal method Ne functions, test functions and compare with 
+NeEstimator, write vignettes for people with specific data types, contribute to main vignette, master badgerer
+George: Molecular Ancestry Ne function, package police
+Rebecca: Finish wrappers, Look at VarEff package - does it do something our functions do not do yet? Can we include, make R markdown files,
+provide test data
+Julia: use functions for a couple of months, check for errors, find bugs
+
+
+
+Begin issues for communication
+Include all used literature and packages into the description of each function (see pegas package for examples)
+Release to CRAN, or keep on github?
+
+Make one package vignette: start is Julias vignette in the multiEff repository
+
+

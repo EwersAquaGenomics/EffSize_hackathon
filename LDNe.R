@@ -5,51 +5,27 @@
 # missing: confidence intervals
 
 require(adegenet)
-harmonic <- function(vec)  1/mean(1/vec)
 
-#?adegenet
-#ls(package:adegenet)
+require(multiNe)
+harmonic<-function(vec)  1/mean(1/vec)
 
+data(nancycats)
 K<-length(nancycats@all.names)
 
-# sample_sizes<-lapply(nancycats@all.names,function(x) sum(as.numeric(x)))
-
-setGeneric(name="getSampleSize_byLocus",
-#   signature="genind",
-   def=function(theObject)
-   {
-     K<-length(theObject@all.names)
-     
-     ends<-cumsum(theObject@loc.nall)
-     starts<-c(0,ends[-length(ends)])+1
-     
-     sample_sizes<-numeric(K)
-     i=4
-     for (i in 1:K){
-       sample_sizes[i]<-sum(na.rm=T,theObject@tab[,starts[i]:ends[i]])
-     }
-     return(sample_sizes)
+ getHeterozygoteNumbers <- function(theObject)
+ {
+   K<-length(theObject@all.names)
+   
+   ends<-cumsum(theObject@loc.nall)
+   starts<-c(0,ends[-length(ends)])+1
+   
+   heterozygote_numbers<-list()
+   i=1
+   for (i in 1:K){
+     heterozygote_numbers[[i]]<-colSums(na.rm=T,theObject@tab[,starts[i]:ends[i]]==0.5)/colSums(!is.na(theObject@tab[,starts[i]:ends[i]]))
    }
-)
-
-
-setGeneric(name="getHeterozygoteNumbers",
-   #   signature="genind",
-   def=function(theObject)
-   {
-     K<-length(theObject@all.names)
-     
-     ends<-cumsum(theObject@loc.nall)
-     starts<-c(0,ends[-length(ends)])+1
-     
-     heterozygote_numbers<-list()
-     i=1
-     for (i in 1:K){
-       heterozygote_numbers[[i]]<-colSums(na.rm=T,theObject@tab[,starts[i]:ends[i]]==0.5)/colSums(!is.na(theObject@tab[,starts[i]:ends[i]]))
-     }
-     return(heterozygote_numbers)
-   }
-)
+   return(heterozygote_numbers)
+ }
 
 sample_sizes <- getSampleSize_byLocus(nancycats)
 
@@ -96,30 +72,5 @@ if(S>=30)
 
 NOT WORKING!!!
   
-###### METHOD 2 ######
-
-K<-length(nancycats@all.names)
-sample_sizes <- getSampleSize_byLocus(nancycats)
-sample_sizes <- getSampleSize_byLocus(nancycats)
-
-genind_sum<-summary(nancycats)
-genind_sum$Hobs
-genind_sum$Hexp
-
-Dindex=Hexp=list()
-Dlocus<-numeric(K)
-Hobs=getHeterozygoteNumbers(nancycats)
-
-j=1
-for(j in 1:K){
-  p<-colSums(nancycats@tab[,starts[j]:ends[j]],na.rm=T)/sample_sizes[j]
-  Hexp[[j]] <- 2*p*(1-p)*(1+1/(2*sample_sizes[j]))
-  #Hexp[[j]] <- 2*p*(1-p)*(1+1/(2*sample_sizes[j]-1))  #alternative version which corrects for bias
-  Dindex[[j]]=(Hobs[[j]]-Hexp[[j]])/Hexp[[j]]
-  Dlocus[j]<-mean(Dindex[[j]])
-}
-
-## Method 2b ##
-
 
 
