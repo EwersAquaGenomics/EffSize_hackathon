@@ -5,19 +5,12 @@
 # missing: confidence intervals
 
 require(adegenet)
-harmonic<-function(vec)  1/mean(1/vec)
+harmonic <- function(vec)  1/mean(1/vec)
 
-?adegenet
-ls(package:adegenet)
+#?adegenet
+#ls(package:adegenet)
 
-data(nancycats)
-nancycats
-head(nancycats@tab)
-
-nancycats@ind.names
 K<-length(nancycats@all.names)
-nancycats@loc.nall
-nancycats@loc.fac
 
 # sample_sizes<-lapply(nancycats@all.names,function(x) sum(as.numeric(x)))
 
