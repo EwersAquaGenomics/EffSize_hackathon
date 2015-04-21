@@ -1,8 +1,5 @@
 ###### METHOD 2: Heterozygote excess Ne ######
 
-## Christine ##
-
-# problems: Ne estimate is too small - where is the error in my formula? Is it low frequency alleles?
 # missing: removing samples with allele frequency < X
 # missing: confidence intervals / bootstrapping
 
@@ -30,6 +27,7 @@ getSampleSize_byLocus <- function(genind_obj)
   return(sample_sizes)
 }
 
+
 #' @title HENe 
 #' @description Calculates population size from a genind object by heterozygote excess
 #' 
@@ -39,7 +37,6 @@ getSampleSize_byLocus <- function(genind_obj)
 #' @examples data(nancycats)
 #' @examples HENe(nancycats)
 #' 
-
 HENe <- function(genind_obj) {
   
   K <- length(genind_obj@all.names)
@@ -69,7 +66,7 @@ HENe <- function(genind_obj) {
       num.allele[[j]][i] <- sum(genind.by.locus[[j]][,i], na.rm=T)*2 # number of occurrences of allele 1 of locus 1
       p[[j]][i] <- num.allele[[j]][i] / num.alleles.per.locus[j]
       Hexp[[j]][i] <- 2*p[[j]][i]*(1-p[[j]][i])*2*sample_sizes[j] / (2*sample_sizes[j]-1)    
-      no.het.per.allele[[j]][i] <- sum(!is.na(temp_genind.locus) & temp_genind.locus == 0.5)
+      no.het.per.allele[[j]][i] <- sum(!is.na(genind.by.locus) & genind.by.locus == 0.5)
       Hobs[[j]][i] <- no.het.per.allele[[j]][i] / num.allele[[j]][i]
       d[[j]][i] <- (Hobs[[j]][i]-Hexp[[j]][i]) / Hexp[[j]][i]
     }
