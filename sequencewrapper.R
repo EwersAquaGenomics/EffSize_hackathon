@@ -1,3 +1,4 @@
+require(phylosim)
 #' @title sequence.wrapper
 #' @description A wrapper function for the sequence simulator programs ms, seqgen, simSeq, and PhyloSim.
 #' 
@@ -11,43 +12,63 @@
 #' @param ms.args arguments passed to ms
 #' @param tree tree of format phylo
 #' @param outfile name of the file that writes out
+#'
+#' @examples library(phyclust)
+#' @examples library(phyloseq)
+#' @examples library(phylosim)
 #' @examples sequence.wrapper(n = 10, L = 10, method = "gen.seq.HKY", tree = phylo)
-
-
-#do we want multiple trees or to run though
-
-sequence.wrapper <- function(n = 10, L = 10, method = NULL, ms.args = NULL, tree = NULL, pi.n = NULL, kappa = "", outfile = "out", ancseq = NULL, rate.in = 1){
+#'
+sequence.wrapper <- function(n = 10, L = 10, method = "", ms.args = NULL, tree = NULL, pi.n = 0.25, kappa = "", outfile = "out", ancseq = NULL, rate.in = 1){
+	if (method == ""){
+		print("What method would you like to use? Please choose from the following: ms, simSeq, gen.seq.HKY, gen.seq.SNP, or PhyloSim.")
+		method <- readline()
+	}
+	# MS METHOD 1
 	if (method == "ms") {
-		if (is.null(ms.args))
-			print("Error: No ms arguments specified")
-		else if (length(grep("-T", ms.args, fixed = TRUE)) == 1)
-			print("Error: This is a sequence generator. Do not use -T.")
-		else {
-			simseq <- ms(nsam = n, nreps = 1, opts = ms.args)
-			ms2nuc(simseq, file = outfile)
+		if (is.null(ms.args)) {
+			print("Error: No ms arguments specified. Please input ms arguments.")
+			ms.args <- readline()
 		}
+		if (length(grep("-T", ms.args, fixed = TRUE)) == 1) {
+			print("Error: This is a sequence generator. Do not use -T. Please try again.")
+			ms.args <- readline()
+		}
+		simseq <- ms(nsam = n, nreps = 1, opts = ms.args)
+		ms2nuc(simseq, file = outfile)
+		print(paste("Output written to ", outfile, sep = ""))
 	} 
+	
+	# GEN.SEQ.HKY METHOD 2
 	if (method == "gen.seq.HKY"){
-		if (is.null(tree)) print("Error: No tree given.")
+		if (is.null(tree)) 
+			stop("Error: No tree given.")
 		pi.n <- eq.prob(pi.n, 4)
 		simseq <- gen.seq.HKY(tree, pi.n, kappa = 1, L, anc.seq = ancseq, rate.scale = rate.in)
+		write(simseq, outfile)
 	}
+	# GEN.SEQ.SNP METHOD 3
 	if (method == "gen.seq.SNP"){
 		if (is.null(tree)) print("Error: No tree given.")
 		pi.n <- eq.prob(pi.n, 2)
 		simseq <- gen.seq.SNP(tree, pi.n, L, anc.seq = ancseq)
+		write(simseq, outfile)
 	}
+	
+	# simSeq METHOD 4
 	if (method == "simSeq"){
 		if (is.null(tree)) print("Error: No tree given.")
+		pi.n <- eq.prob(pi.n, 4)
 		simseq <- simSeq(tree, l = L, rootseq = ancseq, bf = pi.n, rate = rate.in)
 		phang2nuc(simseq, file = outfile)
 	}
+	# PhyloSim METHOD 5
 	if (method == "PhyloSim"){
 		if  (is.null(tree)) print("Error: No tree given.")
 		else {
-			if (!is.null(ancseq))
-				ancseq <- NucleotideSequence(string = ancseq, )
-			else {
+			if (!is.null(ancseq)) {
+				ancseq <- NucleotideSequence(string = ancseq)
+			}
+			if (is.null(ancseq)) {
 				ancseq <- NucleotideSequence(length = L, processes = list(list(JC69()))) 
 				ancseq$states <- c("A", "G", "C", "T")
 			}
@@ -64,11 +85,8 @@ sequence.wrapper <- function(n = 10, L = 10, method = NULL, ms.args = NULL, tree
 #' 
 #' @author Rebecca Harris <rbharris@@uw.edu>
 #' 
-#' @return 
+#' @return A table.
 #' 
-#' @param
-#' @examples
-
 ms2nuc <- function(ms.res, fileout){
 	if (length(grep("positions", ms.res)) == 0)
 		print("No segregating sites. Reexecute loop or increase theta.")
@@ -85,11 +103,8 @@ ms2nuc <- function(ms.res, fileout){
 #' 
 #' @author Rebecca Harris <rbharris@@uw.edu>
 #' 
-#' @return 
+#' @return A vector of pi values.
 #' 
-#' @param
-#' @examples
-
 eq.prob <- function(pi = NULL, n.prob = NULL){
 	if (is.null(pi)) {
 		pi <- rep(1/n.prob, n.prob)
@@ -108,9 +123,6 @@ eq.prob <- function(pi = NULL, n.prob = NULL){
 #' 
 #' @return 
 #' 
-#' @param
-#' @examples
-
 phang2nuc <- function(sq = phang.seq, file = "test.out"){
 	out <- NULL
 	for (i in 1:length(sq)){
@@ -134,13 +146,10 @@ phang2nuc <- function(sq = phang.seq, file = "test.out"){
 #' 
 #' @author Rebecca Harris <rbharris@@uw.edu>
 #' 
-#' @return 
+#' @return A table.
 #' 
-#' @param
-#' @examples
-
 phylosim2nuc <- function(align = sim, file = "test.out"){
-	tip.seqs <- grep("s.*", rownames(align$alignment))
+	tip.seqs <- grep("^t.*", rownames(align$alignment))
 	out <- apply(align $alignment[tip.seqs,], 1, function(x) paste(x, collapse = ""))
 	out <- c(paste(length(out), nchar(out)[1], collapse = " "), out)
 	write.table(out, file, col.names = FALSE, quote = FALSE, sep = "  ")
