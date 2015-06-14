@@ -3,22 +3,28 @@
 library(adegenet)
 data(nancycats)
 
-getSampleSize_byLocus(nancycats)
-# works
 
-makeP(nancycats)
-# works
+### LDNe_051815 ####
 
-makeCrit(nancycats, crit=c(0, 0.05))
-# works
+LDNe(nancycats, crit=0.03, mating="mono")
+# 31.98824
 
-LDNe(nancycats, crit=c(0.05, 0.01), mating="mono")
-#invalid length for loc.fac
-#Error in validObject(x) : invalid class “genind” object: FALSE
-#Called from: (function () 
-#{
-#  .rs.breakOnError(TRUE)
-#})()
 
-HENe(nancycats)
-#Error: (list) object cannot be coerced to type 'double'
+### HENe_052315 ####
+
+HENe(g0, crit=0.01)
+# -1726.6 -> there is no Heterozygote excess?
+# insensitive to low frequency alleles
+HENe(g1, crit=0.01)
+HENe(g2, crit=0)
+
+
+### variance Ne ####
+
+varNe(g)
+#   between.generations       Ne
+#12                 1-2 15.64455
+#13                 1-3 16.44186
+#23                 2-3 14.03297
+
+
