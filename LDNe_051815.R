@@ -1,11 +1,7 @@
 ### LDNe ###
 
-# implemented: accounting for missing data by recalculating S and dropping low frequency alleles (R script: )
-# missing: confidence intervals, bootstrapping or jackknifing (implemented in NeEstimator)
-
 require(pegas)
 require(adegenet)
-
 
 #' @title Allele frequencies per locus
 #' @description Takes a genind object and calculates the frequency of each allele per locus
@@ -17,7 +13,9 @@ require(adegenet)
 #' @examples library(adegenet)
 #' @examples data(nancycats)
 #' @examples makeP(nancycats)
-#' 
+# testing functions
+#genind.by.locus <- seploc(simG)
+
 makeP <- function(genind.by.locus) {
   
   #genind.by.locus <- seploc(genObj)
@@ -55,18 +53,18 @@ makeP <- function(genind.by.locus) {
 # testing the function
 #genObj <- simG
 #j <- 1
-#crit <- 0.01
+#crit <- 0.02
 
 makeCrit <- function(genObj, crit=0.01) {
   
   genind.by.locus <- seploc(genObj) # separates the genind object by locus
+  genCrit <- genind.by.locus
   p <- makeP(genind.by.locus) # makes list with each list element containing the allele frequencies for one locus
   K <- length(genind.by.locus) # number of loci
   pp <- 0
   
   for (j in 1:K) {
       pp <- p[[j]] >= crit  # boolean vector (TRUE FALSE TRUE etc)
-      genCrit <- genind.by.locus
       genCrit[[j]]@tab <- genind.by.locus[[j]]@tab[,pp] # subsets each locus to include only alleles above critical allele frequency
       rs <- rowSums(genCrit[[j]]@tab, na.rm = T)
       for (k in 1:nrow(genCrit[[j]]@tab)) {
@@ -97,10 +95,9 @@ return(genCrit)
 #' 
 
 # to test the function, I executed the lines below and ran through each part of the code without making the function (omitted first and last line)
-#data(nancycats)
 #genObj <- simG
 #crit <- 0.01
-#mating <- "mono"
+#mating <- "random
 
 LDNe_point <- function(genObj, crit=0.01, mating="random") {
   
@@ -113,19 +110,14 @@ LDNe_point <- function(genObj, crit=0.01, mating="random") {
 
   ### calculating numbers and frequencies of alleles per locus, of heterozygotes and homozygotes of alleles per locus
 
-  num.allele <- het.per.allele <- hom.per.allele <- p.het <- p.hom <- vector("list", length=K)
-  num.alleles.per.locus <- 0
+  p.hom <- vector("list", length=K)
+  num.alleles.per.locus <- hom.per.allele <- 0
 
   for (j in 1:K) {
+    num.alleles.per.locus[j] <- sum(genCrit[[j]]@tab, na.rm=T)
     for (i in 1:ncol(genCrit[[j]]@tab)) {
-      num.alleles.per.locus[j] <- sum(genCrit[[j]]@tab, na.rm=T)
-      num.allele[[j]][i] <- sum(genCrit[[j]]@tab[,i], na.rm=T) # number of occurrences of allele 1 of locus 1
-      p[[j]][i] <- num.allele[[j]][i] / num.alleles.per.locus[j] # allele frequency
-      het.per.allele[[j]][i] <- length(genCrit[[j]]@tab[,i][genCrit[[j]]@tab[,i] == 1])
-      hom.per.allele[[j]][i] <- length(genCrit[[j]]@tab[,i][genCrit[[j]]@tab[,i] == 2])
-    
-      p.het[[j]][i] <- het.per.allele[[j]][i] / num.alleles.per.locus[j]
-      p.hom[[j]][i] <- hom.per.allele[[j]][i] / num.alleles.per.locus[j]
+      hom.per.allele <- sum(genCrit[[j]]@tab[,i] == 2, na.rm=T)
+      p.hom[[j]][i] <- hom.per.allele / num.alleles.per.locus[j]
     }
   }
 
@@ -137,13 +129,12 @@ LDNe_point <- function(genObj, crit=0.01, mating="random") {
   bb <- vector("list", length=length(genCrit))
   for (i in 1:length(genCrit)) {
     bb[[i]] <- as.loci(genCrit[[i]])
-    ploidy[i] <- getPloidy(bb[[i]])
+    #ploidy[i] <- getPloidy(bb[[i]])
   }
-
   # merge loci list into a single loci object
-  lociObj <- bb[[1]]  ############## should be diploid, but first locus of any dataset has ploidy 1. Dont know why. NEEDS TO BE ADDRESSED!!!!!!
+  lociObj <- bb[[1]] # generates the first element of lociObj - starting point for cbind
   for (i in 2:length(bb)) {
-  lociObj <- cbind(lociObj, bb[[i]])
+    lociObj <- cbind(lociObj, bb[[i]])
   }
   #getPloidy(lociObj)
 
@@ -162,15 +153,15 @@ LDNe_point <- function(genObj, crit=0.01, mating="random") {
     }
   }
   
-  S.loci <- S.loci[-1]
-  n.loci <- n.loci[-1]
-  w.loci <- n.loci*S.loci^2 # huge numbers
-  delta <- delta.ls[lapply(delta.ls,length)>0] # one matrix per comparison, many NA
+  S.loci <- S.loci[-1] # vector, number of samples (individuals)
+  n.loci <- n.loci[-1] # vector, number of alleles per comparison
+  w.loci <- n.loci*S.loci^2 # vectors, huge numbers
+  delta <- delta.ls[lapply(delta.ls,length)>0] # list, one matrix per comparison, many NA, rows and columns are alleles
   
   ### calculating delta hat
-  delta.hat <- vector("list", length=no.comparisons)
+  delta.hat <- vector("list", length=no.comparisons) # one matrix per comparison, rows and columns are alleles
   for (i in 1:no.comparisons) {
-    delta.hat[[i]] <- delta[[i]]*S.loci[i]/(S.loci[i]-1)
+    delta.hat[[i]] <- delta[[i]]*S.loci[i]/(S.loci[i]-1) # weighing delta, numbers similar to delta
   }
   names(delta.hat) <- names(delta)
 
@@ -191,14 +182,14 @@ LDNe_point <- function(genObj, crit=0.01, mating="random") {
       if (j==K) break
     }
   }
-  r.hat.denom.s <- r.hat.denom[lapply(r.hat.denom,length)>0] 
+  r.hat.denom.s <- r.hat.denom[lapply(r.hat.denom,length)>0] # list, one matrix per comarison, rows and columns are alleles
   
   r.hat <- r.hat2 <- vector("list", length=no.comparisons)
   r.hat2.loci <- 0
   for (i in 1:no.comparisons) {
     r.hat[[i]] <-  delta.hat[[i]]/r.hat.denom.s[[i]]
-    r.hat2[[i]] <- r.hat[[i]]*r.hat[[i]]
-    r.hat2.loci[i] <- mean(r.hat2[[i]], na.rm=T) # mean for each pair of loci
+    r.hat2[[i]] <- r.hat[[i]]*r.hat[[i]] # do I need to take the squareroot of this?
+    r.hat2.loci[i] <- mean(r.hat2[[i]], na.rm=T) # vector, mean for each pair of loci
   }
 
   # taken from NeCalc.pdf
@@ -207,7 +198,7 @@ LDNe_point <- function(genObj, crit=0.01, mating="random") {
   # weighted harmonic mean <- sum(x*weights)/sum(weight)) for each x
   # x is S.loci
   # weights are proportional to n.loci
-  S <- sum(S.loci*n.loci)/sum(n.loci) #227.6122
+  S <- sum(S.loci*n.loci)/sum(n.loci) #49
 
 
   # calculate Ne under random mating:
@@ -262,16 +253,29 @@ jack_samples <- function(genObj) {
 
 # if output is a vector (LDNe, HENe)
 sum_jack <- function (jn, statistic, crit, mating) {
-  stats <- sapply(jn, statistic, crit)
+  stats <- sapply(jn, statistic, crit, mating)
   return(c(median = median(stats), quantile(stats, c(0.025, 0.975), na.rm = TRUE), variance = var(stats)))
 }
 
-### CHECK THIS FUNCTION
+#genObj <- simG
+#crit = 0.02
+#mating = "random"
 LDNe <- function(genObj, crit=0.01, mating="random") {
   Ne_point <- LDNe_point(genObj, crit, mating)
   jn <- jack_samples(genObj)
-  Ne_jack <- sum_jack(jn, LDNe_point, crit, mating) # works
-  return(Ne_jack) 
+  Ne_jack <- sum_jack(jn, LDNe_point, crit, mating) # Error in delta.hat[[i]]/r.hat.denom.s[[i]] : non-conformable arrays
+  return(c(point_estimate=Ne_point, Ne_jack))
 }
 
-#LDNe(g) # takes minutes...
+
+# troubleshooting
+#LDNe(simG)
+
+#genObj <- nancycats
+
+#for (i in 1:length(jn)) {
+#  x[i] <- LDNe_point(jn[[i]])
+#}
+# no errors
+
+
