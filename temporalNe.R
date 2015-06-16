@@ -17,8 +17,8 @@ require(adegenet)
 #' @examples data(nancycats)
 #' @examples varNe(nancycats)
 #' 
-#genObj <- g
-#t <- c(0,1,2) # provided by the user, the generations at which the samples were taken
+genObj <- simG3
+t <- c(0,1,2) # provided by the user, the generations at which the samples were taken
 
 varNe_point <- function(genObj, t = seq(1:length(genObj@pop.names))) {
   G <- length(genObj@pop.names) # number of generations sampled
@@ -35,7 +35,7 @@ varNe_point <- function(genObj, t = seq(1:length(genObj@pop.names))) {
   loc.pop.s <- matrix(0, nrow=G, ncol=L)
   for (i in 1:L) {
     loc.pop[[i]] <- genind2genpop(genind.by.loc[[i]]) # one list element per locus
-    loc.pop.s[,i] <- rowSums(loc.pop[[i]]@tab)/2 # # of ind. sampled per generation. Matrix with loci in columns, generations in rows
+    loc.pop.s[,i] <- rowSums(loc.pop[[i]]@tab)/2 # number of ind. sampled per generation. Matrix with loci in columns, generations in rows
   }
 
   dif <- ff <- z <- matrix(0, nrow=as.numeric(paste(G,G-1,sep="")), ncol=ncol(f))
@@ -79,6 +79,7 @@ varNe_point <- function(genObj, t = seq(1:length(genObj@pop.names))) {
     Fs <- numerator/denominator # single Fs value
     
     S <- 1/(1/sum.K*sum(K/s, na.rm=T)) # harmonic mean sample size per comparison between two generations
+    s.per.gen <- 0
 
     for (i in 1:G) {
       s.per.gen[i] <- 1 / (1/sum.K * sum(K/loc.pop.s[i,], na.rm=T)) # mean of sample size per generation, weigthed by number of alleles per locus   
@@ -145,6 +146,18 @@ varNe_point <- function(genObj, t = seq(1:length(genObj@pop.names))) {
 }
 
 # jackknifing function
+
+#' @title jackknifing samples
+#' @description jackknifes samples
+#'  
+#' @param bs jackknifed populations (list of genind objects)
+#' @param Ne_point output of function varNe_point. Matrix containing point estimates of Ne, one estimate per comparison
+#' @param statistic function to be employed, here varNe_point
+#' 
+#' @return a list. Each element is a jackknifed genind object
+#'
+#' @author Christine Ewers-Saucedo <ewers.christine@@gmail.com>
+#' 
 sum_jack2 <- function (Ne_point, bs, statistic) {
   nreps <- length(bs)
   stats <- lapply(bs, statistic)
@@ -169,11 +182,44 @@ sum_jack2 <- function (Ne_point, bs, statistic) {
   return(oo)
 }
 
+# UNDER DEVELOPMENT ###
+jacknife_populations <- function(genObj) {
+  nsam <- as.vector(table(genObj@pop))
+  for (i in 1:length(genObj@pop.names)) {
+    sub.pop <- genObj[genObj@pop == genObj@pop.names[i]]
+    x <- vector("list", length=nsam)
+    for (i in 1:nsam) {
+      x[[i]] <- sub.pop[-i]
+    }
+  }
+  return(x) 
+}
+####
+
+
+#' @title jackknifing samples
+#' @description jackknifes samples
+#'  
+#' @param genObj A genind object with years as populations.
+#' 
+#' @return a list. Each element is a jackknifed genind object
+#'
+#' @author Christine Ewers-Saucedo <ewers.christine@@gmail.com>
+#' 
+jack_samples <- function(genObj) {
+  nsam <- nrow(genObj@tab)
+  x <- vector("list", length=nsam)
+  for (i in 1:nsam) {
+    x[[i]] <- genObj[-i]
+  }
+  return(x)
+}
+
 
 # combine point estimate and jackknifing summaries
 
 #' @title varNe
-#' @description Calculates population size from a genind object by calculating the variance of allele frequencies between generations, and jackknifes the samples. 
+#' @description Calculates effective population size from a genind object by calculating the variance of allele frequencies between generations, and jackknifes the samples. 
 #' @description The variance F is inversely proportional to the effective population size Ne.
 #' @description This function calculates F based on Jorde and Ryman 2007. They state hat low frequency alleles are not problematic / do not bias Ne estimates, thus they are not removed here.
 #'  
@@ -184,13 +230,13 @@ sum_jack2 <- function (Ne_point, bs, statistic) {
 #'
 #' @author Christine Ewers-Saucedo <ewers.christine@@gmail.com>
 #' 
-#' @examples data(g)
-#' @examples varNe(g)
+#' @examples data(simG3)
+#' @examples varNe(simG3)
 #' 
 varNe <- function(genObj) {
   Ne_point <- varNe_point(genObj)
-  jn <- jacknife_populations(genObj, nreps=100)
-  Ne_jk <- sum_jack2(Ne_point, jn, varNe)
+  jn <- jack_samples(genObj)
+  Ne_jk <- sum_jack2(Ne_point, jn, varNe_point)
   
   return(Ne_jk)
 }

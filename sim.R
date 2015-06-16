@@ -50,8 +50,6 @@ g@loc.nall # 2 loci: 6 and 5 alleles
 
 
 # subsample 50 individuals 
-floor(runif(50, min=0, max=999))
-sample(1:999, 50, replace=FALSE)
 g0S <- g0[sample(1:999, size=50, replace=F)]
 g1S <- g1[sample(1:999, size=50, replace=F)]
 g2S <- g2[sample(1:999, size=50, replace=F)]
