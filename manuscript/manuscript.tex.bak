@@ -1,0 +1,66 @@
+\documentclass[12pt,a4paper,titlepage]{article}
+%\usepackage[utf8]{inputenc}
+%\usepackage{amsmath}
+%\usepackage{amsfonts}
+%\usepackage{amssymb}
+\usepackage{authblk}
+%\usepackage{cite}
+\author[1]{Rebecca Harris}
+\author[2]{Christina Ewers}
+\author[3]{Julia Palacios}
+\author[4]{George Shirreff}
+\affil[2]{University of Georgia}
+\affil[1]{Department of Biology, University of Washington}
+\affil[3]{Harvard University}
+\affil[4]{Imperial College London}
+\usepackage[square,sort,comma]{natbib}
+\date{February 15, 2016}
+\title{multiNe: the many facets of effective population size.}
+
+\begin{document}
+\maketitle
+
+\section{Abstract}
+\section{Introduction}
+
+Effective population size (Ne) is a key parameter in understanding the evolutionary trajectory of a population. Wright (1931) formally described Ne as the number of breeding individuals in an ideal population that show the same rate of genetic drift as the population being studied. Since then, it has become the primary parameter of concern for evolution, ecology, and conservation biology studies. Estimates of Ne encompass the effects of both demographic and genetic processes in finite populations, thus effectively quantifying the rate and timing of molecular evolution \citep{Caballero1994}. 
+
+Despite its wide popularity, the calculation of Ne in natural populations remains challenging and multiple methods have been developed to estimate Ne indirectly from genetic data. Here, we distinguish between two fundamentally different ways to estimate Ne: the coalescent and 
+
+
+% I'm not sure what these two fundamental things should be called - the coalescent and the....?
+On the one hand, coalescent theory provides a means to estimate Ne over evolutionary times using either summary statistics, such as the number of segregating sites \cite{Watterson1975}, number of alleles (Ewens 1972), heterozygosity \citep{Kimmel1998}, variance of the number of microsatellite repeats \citep{Kimmel1998}, or using the shape of the genealogy itself (Kingman 1982). The parameter calculated is theta, the mutation-rate scaled effective population size. Knowing the mutation rate allows us then to convert theta into Ne. Several of these theta calculators are available in the R package pegas (Paradis 2010). 
+
+\section{Functionality}
+
+\subsection{Phy2Sky}
+
+Coalescent theory states that the rate at which the lineages in a phylogeny coalesce is inversely proportional to the effective population size. This relationship allows the estimation of changes in Ne over time to be based on changes in the branching pattern of the genealogy, which can be visualized in so-called skyline plots. Here, we extend the coalescent method found in the ape package (cite) by allowing for phylogenies with heterochronous dated tips.
+The Phy2Sky function takes as its first argument a multiPhylo object, the typical output of widely used Bayesian programs, such as BEAST or MrBayes. We provide a function, burninfrac, to discard a user-defined proportion of the raw posterior distribution as burn-in. Given a set of trees, Phy2Sky will output the end times and Ne estimates of each coalescent interval for each tree. Results from multiple trees can be merged to create a table including every time point at which an event happens across all trees. This can be used to plot the median skyline with the 95\% confidence intervals. The median value at each time point is simply chosen as the median (50th percentile of) effective population size across all the trees. 
+Branch-lengths can be converted from substitutions per site to time units by defining the clock rate in the scaling option of Phy2Sky. Certain users may want to fix the skyline to reflect specific sampling dates. We provide the tools to extract sampling dates from tip names and use these in the skyline output plot.
+
+Skyline data are usually presented by a step function, consisting of only vertical and horizontal lines, implying that for a given period the best estimate for the effective population size is a certain value. We provide numerous functions to manipulate the plotting of these stepwise graphs. For some analyses, it may be preferred that points on the graph are joined by straight sloping lines, implying that the effective population size during this period changes in a regular fashion. We also allow users to combine neighbouring time intervals until a minimum time interval cutoff is met. [Fig \#? Have figure to show these types of graphs?] 
+On the other hand, Ne can be estimated by observing and quantifying deviations from exceptions of infinitely large populations. 
+  
+
+
+
+
+
+
+
+We expect, for example, neither linkage disequilibrium (Weir 1979) and drift (Waples) in infinitely large populations. The presence of either of these phenomena indicates a population smaller than infinity, and the magnitude of the phenomena scales with population size. These estimators calculate Ne of a population over the past few generations, whereas coalescent estimators generally integrate Ne over the past Ne to 4*Ne generations, depending of the mode of inheritance of the genetic marker employed.
+
+\subsection*{Temporal Ne}
+
+Temporal effective population size, also called variance Ne) is based on the premise that finite populations experience genetic drift. This drift results in changes in allele frequencies from one generation to the next which are inversely proportional to Ne (cite Nei and Tajima 1981). To implement this method, genotypic data from a minimum of one locus sampled at two or more generations (assumed to be non-overlapping) is needed. While other programs have implemented this calculation, this is the first time to our knowledge that temporal Ne has been implemented in an R package. Given an a set of loci sampled from known generations, the varNE function will calculate the point estimate for Ne for each possible comparison. Confidence intervals are obtained using jackknifing. However, for many systems, obtaining samples across multiple generations may be unrealistic.
+
+\subsection*{Linkage Disequilibrium}
+
+To accommodate studies where only one time sample is available, we implement a method to calculate Ne based on the magnitude of linkage disequilibrium (LD). Generally, smaller populations are expected to give rise to higher LD than larger populations. 
+Waples (2006) demonstrated that low frequency alleles will bias estimates of Ne. Therefore, we specify the lowest allele frequency to be retained in the dataset.  While Waples and Do (2008) suggest critical values between 0.05 and 0.01, this value is dataset dependent and we leave it to the user to determine the proper cut-off \citep{Waples2010,Waples2008}. The LDNe function requires users to characterize their system as mating randomly, or monogamously. In most cases, random mating may be more appropriate, as it refers to the lifetime mating pattern. 
+  
+\bibliographystyle{molecol.bst}
+\bibliography{multiNE}
+
+\end{document}

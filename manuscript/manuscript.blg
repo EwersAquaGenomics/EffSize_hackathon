@@ -1,0 +1,52 @@
+This is BibTeX, Version 0.99d (TeX Live 2015/dev/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: manuscript.aux
+The style file: ieeetr.bst
+Database file #1: multiNE.bib
+Reallocated field_info (elt_size=4) to 10014 items from 5000.
+Reallocated str_pool (elt_size=1) to 130000 items from 65000.
+Warning--I didn't find a database entry for "1"
+Warning--empty year in Li
+Warning--empty year in Nikolic
+You've used 336 entries,
+            1876 wiz_defined-function locations,
+            2371 strings with 80776 characters,
+and the built_in function-call counts, 133170 in all, are:
+= -- 12608
+> -- 7813
+< -- 0
++ -- 2729
+- -- 2393
+* -- 11146
+:= -- 19456
+add.period$ -- 336
+call.type$ -- 336
+change.case$ -- 336
+chr.to.int$ -- 0
+cite$ -- 338
+duplicate$ -- 5788
+empty$ -- 10034
+format.name$ -- 2393
+if$ -- 31173
+int.to.chr$ -- 0
+int.to.str$ -- 336
+missing$ -- 336
+newline$ -- 1011
+num.names$ -- 336
+pop$ -- 431
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 4889
+stack$ -- 0
+substring$ -- 10622
+swap$ -- 3100
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 2
+while$ -- 1271
+width$ -- 339
+write$ -- 3617
+(There were 3 warnings)
