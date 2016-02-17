@@ -1,9 +1,22 @@
-\documentclass[12pt,a4paper,titlepage]{article}
+\documentclass[english,titlepage]{article}
+%\documentclass[12pt,a4paper,titlepage]{article}
+\usepackage{mathpazo}
+\usepackage[T1]{fontenc}
 %\usepackage[utf8]{inputenc}
-%\usepackage{amsmath}
-%\usepackage{amsfonts}
-%\usepackage{amssymb}
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=2.5cm,rmargin=2.5cm}
+\pagestyle{plain}
 \usepackage{authblk}
+
+
+\usepackage{babel}
+
+\usepackage{float}
+\usepackage{textcomp}
+\usepackage{amstext}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage[authoryear]{natbib}
 %\usepackage{cite}
 \author[1]{Rebecca Harris}
 \author[2]{Christina Ewers}
@@ -13,11 +26,13 @@
 \affil[1]{Department of Biology, University of Washington}
 \affil[3]{Harvard University}
 \affil[4]{Imperial College London}
-\usepackage[square,sort,comma]{natbib}
+%\usepackage[square,sort,comma]{natbib}
 \date{February 15, 2016}
 \title{multiNe: the many facets of effective population size.}
 
 \begin{document}
+\bibliographystyle{molecol.bst}
+
 \maketitle
 
 \section{Abstract}
@@ -28,8 +43,7 @@ Effective population size (Ne) is a key parameter in understanding the evolution
 Despite its wide popularity, the calculation of Ne in natural populations remains challenging and multiple methods have been developed to estimate Ne indirectly from genetic data. Here, we distinguish between two fundamentally different ways to estimate Ne: the coalescent and 
 
 
-% I'm not sure what these two fundamental things should be called - the coalescent and the....?
-On the one hand, coalescent theory provides a means to estimate Ne over evolutionary times using either summary statistics, such as the number of segregating sites \cite{Watterson1975}, number of alleles (Ewens 1972), heterozygosity \citep{Kimmel1998}, variance of the number of microsatellite repeats \citep{Kimmel1998}, or using the shape of the genealogy itself (Kingman 1982). The parameter calculated is theta, the mutation-rate scaled effective population size. Knowing the mutation rate allows us then to convert theta into Ne. Several of these theta calculators are available in the R package pegas (Paradis 2010). 
+On the one hand, coalescent theory provides a means to estimate Ne over evolutionary times using either summary statistics, such as the number of segregating sites \cite{Watterson1975}, number of alleles (Ewens 1972), heterozygosity \citep{Kimmel1998}, variance of the number of microsatellite repeats \citep{Kimmel1998}, or using the shape of the genealogy itself (Kingman 1982). The parameter calculated is theta, the mutation-rate scaled effective population size. Knowing the mutation rate allows us then to convert theta into Ne. Several of these theta calculators are available in the R package pegas \citep{Paradis2004}. 
 
 \section{Functionality}
 
@@ -60,6 +74,6 @@ Temporal effective population size, also called variance Ne) is based on the pre
 To accommodate studies where only one time sample is available, we implement a method to calculate Ne based on the magnitude of linkage disequilibrium (LD). Generally, smaller populations are expected to give rise to higher LD than larger populations. 
 Waples (2006) demonstrated that low frequency alleles will bias estimates of Ne. Therefore, we specify the lowest allele frequency to be retained in the dataset.  While Waples and Do (2008) suggest critical values between 0.05 and 0.01, this value is dataset dependent and we leave it to the user to determine the proper cut-off \citep{Waples2010,Waples2008}. The LDNe function requires users to characterize their system as mating randomly, or monogamously. In most cases, random mating may be more appropriate, as it refers to the lifetime mating pattern. 
   
-\bibliographystyle{molecol.bst}
 
+\bibliography{multiNE}
 \end{document}

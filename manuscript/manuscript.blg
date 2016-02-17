@@ -1,52 +1,49 @@
 This is BibTeX, Version 0.99d (TeX Live 2015/dev/Debian)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: manuscript.aux
-The style file: ieeetr.bst
+The style file: molecol.bst.bst
 Database file #1: multiNE.bib
-Reallocated field_info (elt_size=4) to 10014 items from 5000.
-Reallocated str_pool (elt_size=1) to 130000 items from 65000.
-Warning--I didn't find a database entry for "1"
-Warning--empty year in Li
-Warning--empty year in Nikolic
-You've used 336 entries,
-            1876 wiz_defined-function locations,
-            2371 strings with 80776 characters,
-and the built_in function-call counts, 133170 in all, are:
-= -- 12608
-> -- 7813
-< -- 0
-+ -- 2729
-- -- 2393
-* -- 11146
-:= -- 19456
-add.period$ -- 336
-call.type$ -- 336
-change.case$ -- 336
-chr.to.int$ -- 0
-cite$ -- 338
-duplicate$ -- 5788
-empty$ -- 10034
-format.name$ -- 2393
-if$ -- 31173
-int.to.chr$ -- 0
-int.to.str$ -- 336
-missing$ -- 336
-newline$ -- 1011
-num.names$ -- 336
-pop$ -- 431
+Warning--I didn't find a database entry for "Watterson1975"
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+You've used 5 entries,
+            3174 wiz_defined-function locations,
+            692 strings with 5977 characters,
+and the built_in function-call counts, 4375 in all, are:
+= -- 405
+> -- 153
+< -- 3
++ -- 74
+- -- 42
+* -- 366
+:= -- 620
+add.period$ -- 10
+call.type$ -- 5
+change.case$ -- 39
+chr.to.int$ -- 5
+cite$ -- 5
+duplicate$ -- 328
+empty$ -- 358
+format.name$ -- 59
+if$ -- 896
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 44
+newline$ -- 27
+num.names$ -- 20
+pop$ -- 103
 preamble$ -- 1
-purify$ -- 0
+purify$ -- 34
 quote$ -- 0
-skip$ -- 4889
+skip$ -- 91
 stack$ -- 0
-substring$ -- 10622
-swap$ -- 3100
+substring$ -- 426
+swap$ -- 109
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 0
-warning$ -- 2
-while$ -- 1271
-width$ -- 339
-write$ -- 3617
-(There were 3 warnings)
+type$ -- 45
+warning$ -- 0
+while$ -- 39
+width$ -- 0
+write$ -- 66
+(There was 1 warning)
