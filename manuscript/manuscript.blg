@@ -4,46 +4,47 @@ The top-level auxiliary file: manuscript.aux
 The style file: molecol.bst.bst
 Database file #1: multiNE.bib
 Warning--I didn't find a database entry for "Watterson1975"
+Warning--I didn't find a database entry for "Hui2014"
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-You've used 9 entries,
+You've used 10 entries,
             3174 wiz_defined-function locations,
-            721 strings with 6504 characters,
-and the built_in function-call counts, 6800 in all, are:
-= -- 632
-> -- 205
-< -- 7
-+ -- 96
-- -- 57
-* -- 546
-:= -- 991
-add.period$ -- 18
-call.type$ -- 9
-change.case$ -- 64
-chr.to.int$ -- 9
-cite$ -- 9
-duplicate$ -- 523
-empty$ -- 573
-format.name$ -- 82
-if$ -- 1388
+            730 strings with 6694 characters,
+and the built_in function-call counts, 7666 in all, are:
+= -- 706
+> -- 239
+< -- 8
++ -- 112
+- -- 66
+* -- 619
+:= -- 1113
+add.period$ -- 20
+call.type$ -- 10
+change.case$ -- 73
+chr.to.int$ -- 13
+cite$ -- 10
+duplicate$ -- 592
+empty$ -- 646
+format.name$ -- 94
+if$ -- 1570
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 73
-newline$ -- 43
-num.names$ -- 36
-pop$ -- 150
+missing$ -- 83
+newline$ -- 47
+num.names$ -- 40
+pop$ -- 178
 preamble$ -- 1
-purify$ -- 55
+purify$ -- 62
 quote$ -- 0
-skip$ -- 146
+skip$ -- 165
 stack$ -- 0
-substring$ -- 646
-swap$ -- 180
+substring$ -- 711
+swap$ -- 202
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 81
+type$ -- 87
 warning$ -- 0
-while$ -- 64
+while$ -- 71
 width$ -- 0
-write$ -- 114
-(There was 1 warning)
+write$ -- 126
+(There were 2 warnings)

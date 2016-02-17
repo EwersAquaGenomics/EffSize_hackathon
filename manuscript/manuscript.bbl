@@ -1,4 +1,4 @@
-\begin{thebibliography}{9}
+\begin{thebibliography}{10}
 \providecommand{\natexlab}[1]{#1}
 \input{babelbst.tex}
 \newcommand{\Capitalize}[1]{\uppercase{#1}}
@@ -8,6 +8,11 @@
 Caballero A (1994) {Developments in the prediction of effective population
   size.}
 \newblock \emph{Heredity}, \textbf{73 ( Pt 6)}, 657--679.
+
+\bibitem[{Hein \emph{\bbletal{}}(2005)Hein, Schierup, \& Carsten}]{Hein2005}
+Hein J, Schierup MH, Carsten W (2005) \emph{{Gene genealogies, variation, and
+  evolution: a primer in coalescent theory}}.
+\newblock Oxford University Press, Oxford, \bblfirsto{} \bbledn{}.
 
 \bibitem[{Kimmel \emph{\bbletal{}}(1998)Kimmel, Chakraborty, King, Bamshad,
   Watkins, \& Jorde}]{Kimmel1998}
