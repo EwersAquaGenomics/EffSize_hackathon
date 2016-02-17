@@ -1,4 +1,4 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{11}
 \providecommand{\natexlab}[1]{#1}
 \input{babelbst.tex}
 \newcommand{\Capitalize}[1]{\uppercase{#1}}
@@ -24,6 +24,11 @@ Kimmel M, Chakraborty R, King JP, Bamshad MJ, Watkins WS, Jorde LB (1998)
 Kingman JFC (1982) {On the genealogy of large populations}.
 \newblock \emph{Journal of Applied Probability}, \textbf{19}, 27--43.
 
+\bibitem[{Nei \& Tajima(1981)}]{Nei1981}
+Nei M, Tajima F (1981) {Genetic drift and estimation of effective population
+  size}.
+\newblock \emph{Genetics}, \textbf{98}, 625--640.
+
 \bibitem[{Palacios \& Minin(2013)}]{Palacios2013}
 Palacios JA, Minin VN (2013) {Gaussian Process-Based Bayesian Nonparametric
   Inference of Population Size Trajectories from Gene Genealogies}.
@@ -40,16 +45,15 @@ Paradis E, Claude J, Strimmer K (2004) {APE: Analyses of phylogenetics and
   evolution in R language}.
 \newblock \emph{Bioinformatics}, \textbf{20}, 289--290.
 
+\bibitem[{Waples(2006)}]{Waples2006}
+Waples RS (2006) {A bias correction for estimates of effective population size
+  based on linkage disequilibrium at unlinked gene loci}.
+\newblock \emph{Conservation Genetics}, \textbf{7}, 167--184.
+
 \bibitem[{Waples \& Do(2008)}]{Waples2008}
 Waples RS, Do C (2008) {LDNE: A program for estimating effective population
   size from data on linkage disequilibrium}.
 \newblock \emph{Molecular Ecology Resources}, \textbf{8}, 753--756.
-
-\bibitem[{Waples \& Do(2010)}]{Waples2010}
-Waples RS, Do C (2010) {Linkage disequilibrium estimates of contemporary Ne
-  using highly variable genetic markers: A largely untapped resource for
-  applied conservation and evolution}.
-\newblock \emph{Evolutionary Applications}, \textbf{3}, 244--262.
 
 \bibitem[{Wright(1931)}]{Wright1931}
 Wright S (1931) {Evolution in Mendelian populations}.

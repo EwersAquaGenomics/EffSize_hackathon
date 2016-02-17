@@ -69,19 +69,19 @@ Here, we implement a method to infer Ne from multiple genealogies (assuming inde
 
 \subsection*{Implementation of existing methods}
 
-The following estimators calculate $N_e$ of a population over the past few generations, whereas coalescent estimators generally integrate $N_e$ over the past $N_e$ to $4*Ne$ generations, depending of the mode of inheritance of the genetic marker employed.
+The following estimators calculate $N_e$ of a population over the past few generations, whereas coalescent estimators generally integrate $N_e$ over the past $N_e$ to $4*Ne$ generations, depending of the mode of inheritance of the genetic marker employed. While other programs have implemented these calculations, this is the first time to our knowledge that they has been implemented in an R package. R is widely used across ecology, evolution, and conservation biology and it is desirous to keep calculations in the same platform to prevent error.
 
 \subsubsection*{Temporal effective population size}
 
-Temporal $N_e$, also called variance $N_e$, is based on the premise that finite populations experience genetic drift. This drift results in changes in allele frequencies from one generation to the next which are inversely proportional to $N_e$ (cite Nei and Tajima 1981). To implement this method, genotypic data from a minimum of one locus sampled at two or more generations (assumed to be non-overlapping) is needed. While other programs have implemented this calculation, this is the first time to our knowledge that temporal $N_e$ has been implemented in an R package. Given an a set of loci sampled from known generations, the \texttt{varNE} function will calculate the point estimate for Ne for each possible comparison. Confidence intervals are obtained using jackknifing. However, for many systems, obtaining samples across multiple generations may be unrealistic.
+Temporal $N_e$, also called variance $N_e$, is based on the premise that finite populations experience genetic drift. This drift results in changes in allele frequencies from one generation to the next which are inversely proportional to $N_e$ \citep{Nei1981}. To implement this method, genotypic data from a minimum of one locus sampled at two or more generations (assumed to be non-overlapping) is needed.  Given an a set of loci sampled from known generations, the \texttt{varNE} function will calculate the point estimate for Ne for each possible comparison. Confidence intervals are obtained using jackknifing. However, for many systems, obtaining samples across multiple generations may be unrealistic.
 
 \subsubsection*{Linkage Disequilibrium}
 
 To accommodate studies where only one time sample is available, we implement a method to calculate $N_e$ based on the magnitude of linkage disequilibrium (LD). Generally, smaller populations are expected to give rise to higher LD than larger populations. 
-Waples (2006) demonstrated that low frequency alleles will bias estimates of $N_e$. Therefore, we specify the lowest allele frequency to be retained in the dataset.  While Waples and Do (2008) suggest critical values between 0.05 and 0.01, this value is dataset dependent and we leave it to the user to determine the proper cut-off \citep{Waples2010,Waples2008}. The \texttt{LDNe} function requires users to characterize their system as mating randomly, or monogamously. In most cases, random mating may be more appropriate, as it refers to the lifetime mating pattern. 
+\cite{Waples2006} demonstrated that low frequency alleles will bias estimates of $N_e$. Therefore, we specify the lowest allele frequency to be retained in the dataset.  While \cite{Waples2008} suggest critical values between 0.05 and 0.01, this value is dataset dependent and we leave it to the user to determine the proper cut-off. The \texttt{LDNe} function requires users to characterize their system as mating randomly, or monogamously. In most cases, random mating may be more appropriate, as it refers to the lifetime mating pattern. 
 
 \subsection{Existing Ne estimators in R}
-NB package is a multiple sample maximum likelihood estimator.
+NB package is a multiple sample maximum likelihood estimator\citep{Hui2014}.
   
 
 \bibliography{multiNE}

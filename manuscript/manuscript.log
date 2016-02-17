@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2015.5.22)  17 FEB 2016 14:00
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2015.5.22)  17 FEB 2016 14:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -402,20 +402,20 @@ Package natbib Warning: There were undefined citations.
 
 [3] (./manuscript.aux) ) 
 Here is how much of TeX's memory you used:
- 3891 strings out of 494977
- 53231 string characters out of 6180183
- 115370 words of memory out of 5000000
- 7018 multiletter control sequences out of 15000+600000
+ 3894 strings out of 494977
+ 53276 string characters out of 6180183
+ 115397 words of memory out of 5000000
+ 7021 multiletter control sequences out of 15000+600000
  32398 words of font info for 71 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 38i,4n,32p,904b,281s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,4n,32p,774b,281s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/haekel/.texmf-var/fonts/pk/ljfour/jknappen/ec/e
 ctt1000.600pk>{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/
 share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/
 texlive/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/texmf-dist/fonts
 /type1/urw/palatino/uplri8a.pfb>
-Output written on manuscript.pdf (4 pages, 80498 bytes).
+Output written on manuscript.pdf (4 pages, 80681 bytes).
 PDF statistics:
  62 PDF objects out of 1000 (max. 8388607)
  27 compressed objects within 1 object stream
