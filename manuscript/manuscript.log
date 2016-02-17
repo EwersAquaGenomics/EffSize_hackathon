@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2015.5.22)  16 FEB 2016 16:54
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2015/dev/Debian) (preloaded format=pdflatex 2015.5.22)  17 FEB 2016 12:47
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -387,28 +387,33 @@ Package natbib Warning: Citation `Watterson1975' on page 1 undefined on input l
 ine 46.
 
 LaTeX Font Info:    Font shape `T1/ppl/bx/n' in size <12> not available
-(Font)              Font shape `T1/ppl/b/n' tried instead on input line 50.
-[1] (./manuscript.bbl (./babelbst.tex (./englbst.tex)))
+(Font)              Font shape `T1/ppl/b/n' tried instead on input line 49.
+
+Underfull \hbox (badness 10000) in paragraph at lines 61--63
+
+ []
+
+[1] (./manuscript.bbl (./babelbst.tex (./englbst.tex)) [2])
 
 Package natbib Warning: There were undefined citations.
 
-[2] (./manuscript.aux) ) 
+[3] (./manuscript.aux) ) 
 Here is how much of TeX's memory you used:
- 3832 strings out of 494977
- 52067 string characters out of 6180183
- 116762 words of memory out of 5000000
- 6971 multiletter control sequences out of 15000+600000
+ 3844 strings out of 494977
+ 52295 string characters out of 6180183
+ 115249 words of memory out of 5000000
+ 6983 multiletter control sequences out of 15000+600000
  23328 words of font info for 47 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 38i,4n,32p,891b,256s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 38i,5n,32p,891b,283s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.
 enc}</usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/sh
 are/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texlive/
 texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on manuscript.pdf (3 pages, 62534 bytes).
+Output written on manuscript.pdf (4 pages, 65217 bytes).
 PDF statistics:
- 27 PDF objects out of 1000 (max. 8388607)
- 18 compressed objects within 1 object stream
+ 30 PDF objects out of 1000 (max. 8388607)
+ 20 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

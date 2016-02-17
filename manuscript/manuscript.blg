@@ -5,45 +5,45 @@ The style file: molecol.bst.bst
 Database file #1: multiNE.bib
 Warning--I didn't find a database entry for "Watterson1975"
 Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
-You've used 5 entries,
+You've used 9 entries,
             3174 wiz_defined-function locations,
-            692 strings with 5977 characters,
-and the built_in function-call counts, 4375 in all, are:
-= -- 405
-> -- 153
-< -- 3
-+ -- 74
-- -- 42
-* -- 366
-:= -- 620
-add.period$ -- 10
-call.type$ -- 5
-change.case$ -- 39
-chr.to.int$ -- 5
-cite$ -- 5
-duplicate$ -- 328
-empty$ -- 358
-format.name$ -- 59
-if$ -- 896
+            721 strings with 6504 characters,
+and the built_in function-call counts, 6800 in all, are:
+= -- 632
+> -- 205
+< -- 7
++ -- 96
+- -- 57
+* -- 546
+:= -- 991
+add.period$ -- 18
+call.type$ -- 9
+change.case$ -- 64
+chr.to.int$ -- 9
+cite$ -- 9
+duplicate$ -- 523
+empty$ -- 573
+format.name$ -- 82
+if$ -- 1388
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 44
-newline$ -- 27
-num.names$ -- 20
-pop$ -- 103
+missing$ -- 73
+newline$ -- 43
+num.names$ -- 36
+pop$ -- 150
 preamble$ -- 1
-purify$ -- 34
+purify$ -- 55
 quote$ -- 0
-skip$ -- 91
+skip$ -- 146
 stack$ -- 0
-substring$ -- 426
-swap$ -- 109
+substring$ -- 646
+swap$ -- 180
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 45
+type$ -- 81
 warning$ -- 0
-while$ -- 39
+while$ -- 64
 width$ -- 0
-write$ -- 66
+write$ -- 114
 (There was 1 warning)

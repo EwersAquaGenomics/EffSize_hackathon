@@ -1,4 +1,4 @@
-\begin{thebibliography}{5}
+\begin{thebibliography}{9}
 \providecommand{\natexlab}[1]{#1}
 \input{babelbst.tex}
 \newcommand{\Capitalize}[1]{\uppercase{#1}}
@@ -14,6 +14,20 @@ Caballero A (1994) {Developments in the prediction of effective population
 Kimmel M, Chakraborty R, King JP, Bamshad MJ, Watkins WS, Jorde LB (1998)
   {Signatures of population expansion in microsattelite repeat data}.
 \newblock \emph{Genetics}, \textbf{148}, 1921--1930.
+
+\bibitem[{Kingman(1982)}]{Kingman1982}
+Kingman JFC (1982) {On the genealogy of large populations}.
+\newblock \emph{Journal of Applied Probability}, \textbf{19}, 27--43.
+
+\bibitem[{Palacios \& Minin(2013)}]{Palacios2013}
+Palacios JA, Minin VN (2013) {Gaussian Process-Based Bayesian Nonparametric
+  Inference of Population Size Trajectories from Gene Genealogies}.
+\newblock \emph{Biometrics}, \textbf{69}, 8--18.
+
+\bibitem[{Paradis(2010)}]{Paradis2010}
+Paradis E (2010) {Pegas: An R package for population genetics with an
+  integrated-modular approach}.
+\newblock \emph{Bioinformatics}, \textbf{26}, 419--420.
 
 \bibitem[{Paradis \emph{\bbletal{}}(2004)Paradis, Claude, \&
   Strimmer}]{Paradis2004}
@@ -31,5 +45,9 @@ Waples RS, Do C (2010) {Linkage disequilibrium estimates of contemporary Ne
   using highly variable genetic markers: A largely untapped resource for
   applied conservation and evolution}.
 \newblock \emph{Evolutionary Applications}, \textbf{3}, 244--262.
+
+\bibitem[{Wright(1931)}]{Wright1931}
+Wright S (1931) {Evolution in Mendelian populations}.
+\newblock \emph{Genetics}, \textbf{16}, 97--159.
 
 \end{thebibliography}
