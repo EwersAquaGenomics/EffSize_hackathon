@@ -21,12 +21,14 @@
 \author[1]{Rebecca B Harris}
 \author[2]{Christina Ewers-Saucedo}
 \author[3]{Lucy Li}
-\author[4]{Julia A Palacios}
-\author[5]{George Shirreff}
+\author[4,5,6]{Julia A Palacios}
+\author[7]{George Shirreff}
 \affil[1]{Department of Biology, University of Washington, Seattle, WA 98122}
 \affil[2]{University of California at Davis, Davis, CA}
-\affil[3,5]{Department of Infectious Disease, Imperial College London, London, UK}
+\affil[3,7]{Department of Infectious Disease, Imperial College London, London, UK}
 \affil[4]{Department of Organismic and Evolutionary Biology, Harvard University, Cambridge, MA, 02138}
+\affil[5]{Center for Computational Molecular Biology, Brown University, Providence, RI 02912}
+\affil[6]{Department of Ecology and Evolutionary Biology, Brown University, Providence, RI 02912}
 %\usepackage[square,sort,comma]{natbib}
 \date{}
 \title{multiNe: the many facets of effective population size.}
@@ -58,8 +60,9 @@ Branch-lengths can be converted from substitutions per site to time units by def
 Skyline data are usually presented by a step function, consisting of only vertical and horizontal lines, implying that for a given period the best estimate for the effective population size is a certain value. We provide numerous functions to manipulate the plotting of these stepwise graphs. For some analyses, it may be preferred that points on the graph are joined by straight sloping lines, implying that the effective population size during this period changes in a regular fashion. We also allow users to combine neighbouring time intervals until a minimum time interval cutoff is met. [Fig \#? Have figure to show these types of graphs?] 
 On the other hand, Ne can be estimated by observing and quantifying deviations from exceptions of infinitely large populations. 
   
-\subsection*{Inferring Ne from multiple genealogies}
-Here, we implement a method to infer Ne from multiple genealogies (assuming independence) using integrated nested Laplace approximation (INLA).
+\subsection*{Inferring Ne from multiple genealogies} 
+Data from multiple effectively unlinked genetic loci are rapidly becoming the norm in the era of next-generation sequencing. Evolutionary dynamics of such independently evolving loci are governed by the same demographic history of the population under study, enabling straightforward estimation of effective
+population size trajectories based on multilocus genetic data. Increasing the number of loci improves precision of the phylodynamic estimation, which is critical for these nonparametric procedures that often suffer from large Bayesian Credible Intervals (BCIs). Here, we implement a method to infer Ne from multiple genealogies (assuming independence) using integrated nested Laplace approximation (INLA).
 \subsection*{New coalescent simulators}
 \citep{Palacios2013}
 
