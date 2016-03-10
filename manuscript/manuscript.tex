@@ -62,7 +62,8 @@ On the other hand, Ne can be estimated by observing and quantifying deviations f
   
 \subsection*{Inferring Ne from multiple genealogies} 
 Data from multiple effectively unlinked genetic loci are rapidly becoming the norm in the era of next-generation sequencing. Evolutionary dynamics of such independently evolving loci are governed by the same demographic history of the population under study, enabling straightforward estimation of effective
-population size trajectories based on multilocus genetic data. Increasing the number of loci improves precision of the phylodynamic estimation, which is critical for these nonparametric procedures that often suffer from large Bayesian Credible Intervals (BCIs). Here, we implement a method to infer Ne from multiple genealogies (assuming independence) using integrated nested Laplace approximation (INLA).
+population size trajectories based on multilocus genetic data. Increasing the number of loci improves precision of the phylodynamic estimation, which is critical for these nonparametric procedures that often suffer from large Bayesian Credible Intervals (BCIs). Here, we implement a method to infer Ne from multiple genealogies (assuming independence) using integrated nested Laplace approximation (INLA). We assume that our data consist of $n$ independent genealogies $g_{1},\ldots,g_{n}$ and we are interested in estimating $N_{e}(t)$. Following \citet{palacios2012INLA}, we model $\log N_{e}(t)$ as a log Brownian motion process with precision parameter $\tau$, that is, $\log N_{e}(t) \sim BM(\tau)$. Our approach infers $N_{e}(t_{i})$ at $t_{1},\ldots,t_{B}$ regularly spaced time points. Our point estimates correspond to posterior marginal medians at each time point. Posterior marginals are approximated using INLA (cite INLA here). Our implementation extends the method implemented in ..
+
 \subsection*{New coalescent simulators}
 \citep{Palacios2013}
 
