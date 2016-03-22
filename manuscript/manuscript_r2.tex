@@ -41,16 +41,15 @@
 Inference of effective population size over time from genomic data is very useful in a multitude of disciplines from conservation biology to epidemiology of infectious diseases. It provides insight about past evolutionary dynamics from present-day genomic data. [Something about different methods and sources of data to estimate the same thing and the motivation of this package] 
 \section{Introduction}
 
-A key parameter in elucidating the evolutionary history of a population is the effective population size over time ($N_e(t)$), which is defined as the number of breeding individuals in an idealized population that show the same rate of genetic drift as the population being studied \citep{Wright1931}. Estimates of $N_e$ encompass the effects of both demographic and genetic processes in finite populations, thus effectively quantifying the rate and timing of molecular evolution. \citep{Caballero1994}. Therefore, effective population size plays a central role in evolutionary studies seeking to disentangle the relative roles of stochastic and deterministic forces in modern studies of molecular evolution.
+A key parameter in elucidating the evolutionary history of a population is the effective population size over time ($N_e(t)$), which is defined as the number of breeding individuals in an idealized population that show the same rate of genetic drift as the population being studied \citep{Wright1931}. Estimates of $N_e$ encompass the effects of both demographic and genetic processes in finite populations, thus effectively quantifying the rate and timing of molecular evolution \citep{Caballero1994}. Therefore, effective population size plays a central role in evolutionary studies seeking to disentangle the relative roles of stochastic and deterministic forces in modern studies of molecular evolution.Since then, it has become the primary parameter of concern for evolution, ecology, conservation biology studies and the surveillance of infectious diseases. 
 
-Since then, it has become the primary parameter of concern for evolution, ecology, conservation biology studies and the surveillance of infectious diseases. 
 Despite its widespread usage in various disciplines from conservation biology to epidemiology, measuring $N_e$ in natural populations remains a challenge. More specifically, the product of the mutation rate and effective size $\theta$ can be estimated from summary statistics such as the number of segregating sites \cite{Watterson1975}, number of alleles (Ewens 1972), heterozygosity \citep{Kimmel1998}, and variance of the number of microsatellite repeats \citep{Kimmel1998}. Alternatively, $\theta$ can be estimated from the genealogy itself \citep{Kingman1982}. If the mutation rate is known, then $N_e$ can be calculated from estimates of $\theta$. 
 %The parameter calculated is theta, the mutation-rate scaled effective population size. Knowing the mutation rate allows us then to convert theta into $N_e$. 
 %Several of these theta calculators are available in the R package \texttt{pegas} \citep{Paradis2010}. 
 
 
 \section*{Functionality}
-\subsection*{Phy2Sky}
+\subsection*{Skyline plots with dated tips}
 
 Coalescent theory states that the rate at which the lineages in a genealogy coalesce is inversely proportional to the effective population size \citep{Kingman1982} \citep{slatkin_pairwise_1991}. This relationship allows the estimation of changes in $N_e(t)$ over time to be based on changes in the rate of coalescence. Assuming a constant population size between coalescent events, the history of $N_e$ can be visualized as skyline plots. Here, we extend the skyline method implemented in the \texttt{R} package \texttt{ape} \citep{Paradis2004} by allowing for genealogies with heterochronous tips. This will be of particular value in epidemiological studies where sample collection times are often available and differences in sampling times are greater than time intervals between coalescent events. 
 
@@ -85,16 +84,18 @@ population size trajectories based on multilocus genetic data. Increasing the nu
 
 
 \subsection*{Implementation of existing methods}
+% Perhaps insert wordage from Wright-Fischer intro into here? See also Christine's comments on intro
 
 The following estimators calculate $N_e$ of a population over the past few generations, whereas coalescent estimators generally integrate $N_e$ over the past $N_e$ to $4*Ne$ generations, depending of the mode of inheritance of the genetic marker employed. While other programs have implemented these calculations, this is the first time to our knowledge that they has been implemented in an R package. R is widely used across ecology, evolution, and conservation biology and it is desirous to keep calculations in the same platform to prevent error.
 
 \subsubsection*{Temporal effective population size}
 
-Temporal $N_e$, also called variance $N_e$, is based on the premise that finite populations experience genetic drift. This drift results in changes in allele frequencies from one generation to the next which are inversely proportional to $N_e$ \citep{Nei1981}. To implement this method, genotypic data from a minimum of one locus sampled at two or more generations (assumed to be non-overlapping) is needed.  Given an a set of loci sampled from known generations, the \texttt{varNE} function will calculate the point estimate for $N_e$ for each possible comparison. Confidence intervals are obtained using jackknifing. However, for many systems, obtaining samples across multiple generations may be unrealistic.
+Temporal $N_e$, also called variance $N_e$, is based on the premise that finite populations experience genetic drift. This drift results in random changes in allele frequencies from one generation to the next which are inversely proportional to $N_e$ \citep{Nei1981}. To implement this method, genotypic data from at least one locus sampled at two or more generations (assumed to be non-overlapping) is needed.  Given a set of loci sampled from known generations, the \texttt{varNE} function will calculate the point estimate for $N_e$ for each possible comparison. Confidence intervals are obtained using jackknifing. 
+%However, for many systems, obtaining samples across multiple generations may be unrealistic.
 
 \subsubsection*{Linkage Disequilibrium}
 
-To accommodate studies where only one time sample is available, we implement a method to calculate $N_e$ based on the magnitude of linkage disequilibrium (LD). Generally, smaller populations are expected to give rise to higher LD than larger populations. 
+We also implement a method to calculate $N_e$ based on the magnitude of linkage disequilibrium (LD). Generally, smaller populations are expected to give rise to higher LD than larger populations. 
 \cite{Waples2006} demonstrated that low frequency alleles will bias estimates of $N_e$. Therefore, we specify the lowest allele frequency to be retained in the dataset.  While \cite{Waples2008} suggest critical values between 0.05 and 0.01, this value is dataset dependent and we leave it to the user to determine the proper cut-off. The \texttt{LDNe} function requires users to characterize their system as mating randomly, or monogamously. In most cases, random mating may be more appropriate, as it refers to the lifetime mating pattern. 
 
 %\subsection{Existing Ne estimators in R}
