@@ -20,12 +20,12 @@
 %\usepackage{cite}
 \author[1]{Rebecca B Harris}
 \author[2]{Christine Ewers-Saucedo}
-\author[3]{Lucy Li}
+\author[3]{Lucy M Li}
 \author[4,5,6]{Julia A Palacios}
 \author[7]{George Shirreff}
 \affil[1]{Department of Biology, University of Washington, Seattle, WA 98122}
 \affil[2]{Department of Evolution and Ecology, University of California at Davis, Davis, CA}
-\affil[3,7]{Department of Infectious Disease, Imperial College London, London, W2 1PG, UK}
+\affil[3,7]{Department of Infectious Disease Epidemiology, Imperial College London, London, W2 1PG, UK}
 \affil[4]{Department of Organismic and Evolutionary Biology, Harvard University, Cambridge, MA, 02138}
 \affil[5]{Center for Computational Molecular Biology, Brown University, Providence, RI 02912}
 \affil[6]{Department of Ecology and Evolutionary Biology, Brown University, Providence, RI 02912}
@@ -63,12 +63,13 @@ The \texttt{Phy2Sky} function takes as its first argument a \texttt{multiPhylo} 
 
 Branch-lengths can be converted from substitutions per site to time units by defining the clock rate in the scaling option of \texttt{Phy2Sky}. Certain users may want to fix the skyline to reflect specific sampling dates. We provide the tools to extract sampling dates from tip names and use these in the skyline output plot.
 
-Because the skyline method provides maximum likelihood estimates of $N_e(t)$, which is assumed to remain constant over each inter-coalescent interval, skyline data are usually visualized as a stepwise plot comprising function only vertical and horizontal lines. We provide numerous functions to manipulate the plotting of these stepwise graphs. For some analyses, it may be preferred that points on the graph are joined by straight sloping lines, implying that the effective population size during this period changes in a regular fashion. We also allow users to combine neighbouring time intervals until a minimum time interval cutoff is met. [Fig \#? Have figure to show these types of graphs?] On the other hand, $N_e$ can be estimated by observing and quantifying exceptions of infinitely large populations. 
+Because the skyline method provides maximum likelihood estimates of $N_e(t)$, which is assumed to remain constant over each inter-coalescent interval, skyline data are usually visualized as a stepwise plot comprising function only vertical and horizontal lines. We provide numerous functions to manipulate the plotting of these stepwise graphs. For some analyses, it may be preferred that points on the graph are joined by straight sloping lines, implying that the effective population size during this period changes in a gradual fashion. We also allow users to combine neighbouring time intervals until a minimum time interval cutoff is met in order to smooth the curve of the skyline. 
+%[Fig \#? Have figure to show these types of graphs?] On the other hand, $N_e$ can be estimated by observing and quantifying exceptions of infinitely large populations. 
 
   
 \subsection*{Inferring Ne from multiple genealogies} 
 In the era of next-generation sequencing, data from multiple effectively unlinked genetic loci are rapidly becoming the norm. Evolutionary dynamics of such independently evolving loci are governed by the same demographic history of the population under study, enabling straightforward estimation of effective
-population size trajectories based on multilocus genetic data. Increasing the number of loci improves precision of the  estimation of effective population size trajectories, which is critical for nonparametric procedures that often suffer from large Bayesian Credible Intervals (BCIs). Here, we implement a method to infer effective population size trajectories ($N_{e}$) from multiple independent genealogies using integrated nested Laplace approximation (INLA) under the coalescent model. Here, we assume that our data consist of $n$ independent genealogies $g_{1},\ldots,g_{n}$ and we are interested in estimating $N_{e}(t)$. Following \citet{palacios2012INLA}, we model $\log N_{e}(t)$ as a log Brownian motion process with precision parameter $\tau$, that is, $\log N_{e}(t) \sim BM(\tau)$. Our approach infers $N_{e}(t_{i})$ at $t_{1},\ldots,t_{B}$ regularly spaced time points. Our point estimates correspond to posterior marginal medians at each time point and our credible regions correspond to 95\% Bayesian Credible Intervals (BCIs). Posterior marginals are approximated using \texttt{R-INLA} \citep{INLA_2009} . Our implementation extends the method implemented in \texttt{R-phylodyn} to account for multiple independent genealogies.
+population size trajectories based on multi-locus genetic data. Increasing the number of loci improves precision of the  estimation of effective population size trajectories, which is critical for non-parametric procedures that often suffer from large Bayesian Credible Intervals (BCIs). Here, we implement a method to infer effective population size trajectories ($N_{e}$) from multiple independent genealogies using integrated nested Laplace approximation (INLA) under the coalescent model. Here, we assume that our data consist of $n$ independent genealogies $g_{1},\ldots,g_{n}$ and we are interested in estimating $N_{e}(t)$. Following \citet{palacios2012INLA}, we model $\log N_{e}(t)$ as a log Brownian motion process with precision parameter $\tau$, that is, $\log N_{e}(t) \sim BM(\tau)$. Our approach infers $N_{e}(t_{i})$ at $t_{1},\ldots,t_{B}$ regularly spaced time points. Our point estimates correspond to posterior marginal medians at each time point and our credible regions correspond to 95\% Bayesian Credible Intervals (BCIs). Posterior marginals are approximated using \texttt{R-INLA} \citep{INLA_2009} . Our implementation extends the method implemented in \texttt{R-phylodyn} to account for multiple independent genealogies.
 \begin{figure}
 \begin{center}
       \includegraphics[scale=0.8]{Figures/Bottle_20_independent.eps}    \end{center}
