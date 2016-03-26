@@ -38,7 +38,7 @@
 \maketitle
 
 \section{Abstract}
-Inference of effective population size over time from genomic data is of paramount importance in a multitude of disciplines from conservation biology to epidemiology of infectious diseases. It provides insight about past evolutionary dynamics from present-day genomic data. Here, we present a new R package, \texttt{multiNe}, which allows users to explore effective population size using either the coalescent or the Wright-Fisher model. 
+Inference of effective population size over time from genomic data is of paramount importance in a multitude of disciplines from conservation biology to epidemiology of infectious diseases. It provides insight about past evolutionary dynamics from present-day genomic data. Here, we present a new R package, \texttt{multiNe}, which allows users to explore effective population size ($N_e$) using either the coalescent or the Wright-Fisher model. 
 
 
 \section{Introduction}
@@ -107,10 +107,10 @@ We also implement a method to calculate $N_e$ based on the magnitude of linkage 
 \cite{Waples2006} demonstrated that low frequency alleles will bias estimates of $N_e$. Therefore, we specify the lowest allele frequency to be retained in the dataset.  While \cite{Waples2008} suggest critical values between 0.05 and 0.01, this value is dataset dependent and we leave it to the user to determine the proper cut-off. The \texttt{LDNe} function requires users to characterize their system as mating randomly, or monogamously. In most cases, random mating may be more appropriate, as it refers to the lifetime mating pattern. 
 
 \section*{Obtaining multiNe}
-The package - including an example data set and tutorial vignettes - is available for free from https://github.com/georgeshirreff/multiNe. 
+Currently, many $N_e$ estimators are only available for specific operating systems. Since \texttt{multiNe} is written in R, it is not limited by operating system. The package - including an example data set and tutorial vignettes - is available for free from https://github.com/georgeshirreff/multiNe. 
 
 \section*{Acknowledgements}
-We would like to thank Hilmar Lapp and the participants of the 2016 Population Genomics Hackathon hosted by the National Evolutionary Synthesis Center. This work was funded by NEScent grant ###.
+We would like to thank Hilmar Lapp and the participants of the 2016 Population Genomics Hackathon hosted by the National Evolutionary Synthesis Center. This work was funded by NEScent grant ???. 
 
 
 %\subsection{Existing Ne estimators in R}
