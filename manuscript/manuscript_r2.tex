@@ -38,7 +38,7 @@
 \maketitle
 
 \section{Abstract}
-Inference of effective population size over time from genomic data is of paramount importance in a multitude of disciplines from conservation biology to epidemiology of infectious diseases. It provides insight about past evolutionary dynamics from present-day genomic data. Here, we present a new \texttt{R} package, called \texttt{multiNe}, that allows us to infer effective population size trajectories from genealogies under the coalescent framework and from allele frequencies directly. Our coalescent framework provides nonparametric Bayesian estimates of effective population size over time from genealogical data. In addition, we implement two alternative methods for inferring $N_{e}$ from genotypic data and allele frequencies. Our implementation will allow for the interaction of our package with other packages implemented in \texttt{R} to infer effective population size trajectories from sequence data (i.e, \texttt{coalescentmcmc} and \texttt{phangorn}).
+Inference of effective population size over time from genomic data is of paramount importance in a multitude of disciplines from conservation biology to epidemiology of infectious diseases. It provides insight about past evolutionary dynamics from present-day genomic data. Here, we present a new R package, \texttt{multiNe}, which allows users to explore effective population size using either the coalescent or the Wright-Fisher model. 
 
 
 \section{Introduction}
@@ -47,8 +47,7 @@ A key parameter in elucidating the evolutionary history of a population is the e
 
 Coalescent theory shows that under neutrality, effective population size trajectories on a completely linked segment of genomic data are separated by two stochastic process: an ancestral process that relates the samples (coalescent process of genealogies) and a stochastic process of mutations that acts on the branches of the genealogy of the sample. Despite its widespread usage in various disciplines, measuring $N_e$ in natural populations remains a challenge because the latent state space of genealogies grows exponentially with the number of samples and because $N_e$ is usually an unknown function (i.e. exponential growth or bottleneck) hard to parametrize in practice. Here, we simplify the problem by assuming that a representative genealogy is previously estimated and available. We extend current methods implemented in different \texttt{R}-packages such as \texttt{ape} and \texttt{phylodyn} to account for heterochronous sampling and multiple independent genealogies.
 
-Alternatively, if we have reasons to assume that $N_{e}$ is constant over time, and our data consist of allele frequencies, we can assume a simple Wright-Fisher model. For example, neither linkage disequilibrium nor drift is expected in infinitely large populations, but both phenomena become more apparent as effective population size decreases. Thus by calculating the magnitude of linkage disequilibrium or genetic drift, we can infer $N_{e}$ if we know the mutation rate. Lacking mutation rate data, we can estimate $\theta$,  the mutation-rate scaled effective population size. $\Theta$ can be compared instead of $N_{e}$ if we assume that mutation rates, albeit unknown, are comparable between systems. 
-%These Wright-Fisher estimators calculate $N_{e}$ over the past few generations, whereas coalescent estimators integrate $N_e$ over the past $N_e$ to 4 * $N_e$ generations.
+Alternatively, if we have reasons to assume that $N_{e}$ is constant over time, and our data consist of allele frequencies, we can assume a simple Wright-Fisher model. For example, neither linkage disequilibrium nor drift is expected in infinitely large populations, but both phenomena become more apparent as effective population size decreases. Thus by calculating the magnitude of linkage disequilibrium or genetic drift, we can infer $N_{e}$ if we know the mutation rate. Lacking mutation rate data, we can estimate $\theta$,  the mutation-rate scaled effective population size. $\Theta$ can be compared instead of $\N_{e}$ if we assume that mutation rates, albeit unknown, are comparable between systems. These Wright-Fisher estimators calculate Ne over the past few generations, whereas coalescent estimators integrate $N_e$ over the past $N_e$ to 4 * $N_e$ generations.
 
 %More specifically, the product of the mutation rate and effective size $\theta$ can be estimated from summary statistics such as the number of segregating sites \cite{Watterson1975}, number of alleles \cite{Ewens 1972}, heterozygosity \citep{Kimmel1998}, and variance of the number of microsatellite repeats \citep{Kimmel1998}. Alternatively, $\theta$ can be estimated from the genealogy itself \citep{Kingman1982}. If the mutation rate is known, then $N_e$ can be calculated from estimates of $\theta$. 
 %I don't like this paragraph. 
@@ -92,10 +91,10 @@ population size trajectories based on multi-locus genetic data. Increasing the n
 %\citep{Hein2005}
 
 
-\subsection*{Implementation of Wright-Fischer estimators}
+\subsection*{Implementation of Wright-Fisher estimators}
 % Perhaps insert wordage from Wright-Fischer intro into here? See also Christine's comments on intro
 
-Wright-Fischer estimators calculate $N_e$ of a population over the past few generations, whereas coalescent estimators generally integrate $N_e$ over the past $N_e$ to $4*Ne$ generations, depending of the mode of inheritance of the genetic marker employed. They generally summarize the genetic data at hand, and estimate $N_e$ when mutation rates are known, else its mutation-rate scaled counterpart $\theta$. The \texttt{R}-package \texttt{ape} provides functions to calculate $\theta$ based on levels of homozygosity, the number of segregating sites, or the expected number of alleles \citep{Paradis2004}. The \texttt{R}-package \texttt{NB} implements a likelihood estimator based on observed magnitude of genetic drift between generations, called temporal effective population size. Unfortunately, it is not straightforward to generate the required data input format. While other programs have implemented calculations based on levels of linkage disequilibrium, this is the first time to our knowledge that they has been implemented in an \texttt{R}-package. To facilitate comparisons across multiple estimators, it is desirous to keep calculations in the same platform to prevent error.
+Wright-Fisher estimators calculate $N_e$ of a population over the past few generations, whereas coalescent estimators generally integrate $N_e$ over the past $N_e$ to $4*Ne$ generations, depending of the mode of inheritance of the genetic marker employed. They generally summarize the genetic data at hand, and estimate $N_e$ when mutation rates are known, else its mutation-rate scaled counterpart $\theta$. The \texttt{R}-package \texttt{ape} provides functions to calculate $\theta$ based on levels of homozygosity, the number of segregating sites, or the expected number of alleles \citep{Paradis2004}. The \texttt{R}-package \texttt{NB} implements a likelihood estimator based on observed magnitude of genetic drift between generations, called temporal effective population size. Unfortunately, it is not straightforward to generate the required data input format. While other programs have implemented calculations based on levels of linkage disequilibrium, this is the first time to our knowledge that they has been implemented in an \texttt{R}-package. To facilitate comparisons across multiple estimators, it is desirous to keep calculations in the same platform to prevent error.
 
 \subsubsection*{Temporal effective population size}
 
@@ -106,6 +105,13 @@ Temporal $N_e$, also called variance $N_e$, is based on the premise that finite 
 
 We also implement a method to calculate $N_e$ based on the magnitude of linkage disequilibrium (LD). Generally, smaller populations are expected to give rise to higher LD than larger populations. 
 \cite{Waples2006} demonstrated that low frequency alleles will bias estimates of $N_e$. Therefore, we specify the lowest allele frequency to be retained in the dataset.  While \cite{Waples2008} suggest critical values between 0.05 and 0.01, this value is dataset dependent and we leave it to the user to determine the proper cut-off. The \texttt{LDNe} function requires users to characterize their system as mating randomly, or monogamously. In most cases, random mating may be more appropriate, as it refers to the lifetime mating pattern. 
+
+\section*{Obtaining multiNe}
+The package - including an example data set and tutorial vignettes - is available for free from https://github.com/georgeshirreff/multiNe. 
+
+\section*{Acknowledgements}
+We would like to thank Hilmar Lapp and the participants of the 2016 Population Genomics Hackathon hosted by the National Evolutionary Synthesis Center. This work was funded by NEScent grant ###.
+
 
 %\subsection{Existing Ne estimators in R}
 %NB package is a multiple sample maximum likelihood estimator\citep{Hui2014}.
